@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --bg-blush: #FAF4F0;
+  --bg-cream: #F5EBE4;
+  --bg-card: #F7F1EC;
+  --text-dark: #3A2526;
+  --accent-rose: #5C3637;
+  --accent-rose-hover: #422627;
+  --border-warm: #EFE3DA;
+}
+
+body {
+  background-color: #FAF4F0;
+  color: #3A2526;
+  font-family: var(--font-sans);
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+/* Custom scrollbar matching soft nude theme */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #FAF4F0;
+}
+::-webkit-scrollbar-thumb {
+  background: #E5D5C9;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #D4BEB0;
+}
