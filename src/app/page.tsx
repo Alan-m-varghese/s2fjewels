@@ -115,7 +115,7 @@ const FALLBACK_BEST_SELLERS = [
 ];
 
 export default async function HomePage() {
-  let bestSellers = FALLBACK_BEST_SELLERS;
+  let bestSellers: any[] = [];
 
   try {
     const dbProducts = await prisma.product.findMany({
@@ -125,14 +125,13 @@ export default async function HomePage() {
       orderBy: { createdAt: 'desc' },
     });
 
-    if (dbProducts.length > 0) {
-      bestSellers = dbProducts.map((p) => ({
-        ...p,
-        price: Number(p.price),
-      })) as any;
-    }
+    bestSellers = dbProducts.map((p) => ({
+      ...p,
+      price: Number(p.price),
+    }));
   } catch (err) {
-    console.warn('Database fallback loaded for HomePage.');
+    console.warn('Database error, loading fallback for HomePage:', err);
+    bestSellers = FALLBACK_BEST_SELLERS as any[];
   }
 
   return (

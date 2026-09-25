@@ -68,10 +68,7 @@ export default async function EditProductPage({ params }: { params: { id: string
       };
     }
   } catch (err) {
-    console.warn('Database fallback loaded for EditProductPage:', err);
-  }
-
-  if (!product) {
+    console.warn('Database connection error, checking fallback for EditProductPage:', err);
     product = FALLBACK_PRODUCTS.find((p) => p.id === params.id || p.slug === params.id);
   }
 

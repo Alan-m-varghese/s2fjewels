@@ -68,9 +68,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const currentPage = parseInt(searchParams.page || '1', 10);
   const pageSize = 12;
 
-  let categories = FALLBACK_CATEGORIES;
-  let products = FALLBACK_PRODUCTS;
-  let totalCount = FALLBACK_PRODUCTS.length;
+  let categories: any[] = [];
+  let products: any[] = [];
+  let totalCount = 0;
 
   try {
     const fetchedCategories = await prisma.category.findMany({
@@ -80,9 +80,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         },
       },
     });
-    if (fetchedCategories.length > 0) {
-      categories = fetchedCategories as any;
-    }
+    categories = fetchedCategories as any;
 
     const where: any = {
       status: 'ACTIVE',
@@ -118,14 +116,15 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       take: pageSize,
     });
 
-    if (dbProducts.length > 0) {
-      products = dbProducts.map((p) => ({
-        ...p,
-        price: Number(p.price),
-      })) as any;
-    }
+    products = dbProducts.map((p) => ({
+      ...p,
+      price: Number(p.price),
+    })) as any;
   } catch (err) {
-    console.warn('Database fallback loaded for ProductsPage.');
+    console.warn('Database error, loading fallback for ProductsPage:', err);
+    categories = FALLBACK_CATEGORIES as any;
+    products = FALLBACK_PRODUCTS as any;
+    totalCount = FALLBACK_PRODUCTS.length;
   }
 
   const totalPages = Math.ceil(totalCount / pageSize);

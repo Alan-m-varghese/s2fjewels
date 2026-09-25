@@ -73,16 +73,16 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
         price: Number(product.price),
       });
     }
+
+    return NextResponse.json({ error: 'Product not found' }, { status: 404 });
   } catch (error: any) {
     console.warn('GET /api/products/[id] database query error, searching fallbacks:', error?.message);
+    const fallback = FALLBACK_PRODUCTS.find((p) => p.id === params.id || p.slug === params.id);
+    if (fallback) {
+      return NextResponse.json(fallback);
+    }
+    return NextResponse.json({ error: 'Product not found' }, { status: 404 });
   }
-
-  const fallback = FALLBACK_PRODUCTS.find((p) => p.id === params.id || p.slug === params.id);
-  if (fallback) {
-    return NextResponse.json(fallback);
-  }
-
-  return NextResponse.json({ error: 'Product not found' }, { status: 404 });
 }
 
 export async function PUT(req: Request, { params }: { params: { id: string } }) {

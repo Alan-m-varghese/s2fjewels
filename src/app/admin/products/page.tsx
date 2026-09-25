@@ -50,21 +50,20 @@ const FALLBACK_PRODUCTS = [
 ];
 
 export default async function AdminProductsPage() {
-  let products = FALLBACK_PRODUCTS as any[];
+  let products: any[] = [];
 
   try {
     const dbProducts = await prisma.product.findMany({
       include: { category: true },
       orderBy: { createdAt: 'desc' },
     });
-    if (dbProducts.length > 0) {
-      products = dbProducts.map((p) => ({
-        ...p,
-        price: Number(p.price),
-      })) as any;
-    }
+    products = dbProducts.map((p) => ({
+      ...p,
+      price: Number(p.price),
+    }));
   } catch (err) {
-    console.warn('Database fallback loaded for AdminProductsPage.');
+    console.warn('Database error, loading fallback for AdminProductsPage:', err);
+    products = FALLBACK_PRODUCTS;
   }
 
   return (

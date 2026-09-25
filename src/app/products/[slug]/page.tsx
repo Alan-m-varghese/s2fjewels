@@ -51,11 +51,12 @@ export default async function ProductDetailPage({ params }: { params: { slug: st
       };
     }
   } catch (err) {
-    console.warn('DB disconnected. Searching fallback products for slug:', params.slug);
+    console.warn('DB error. Searching fallback products for slug:', params.slug);
+    product = FALLBACK_PRODUCTS.find((p) => p.slug === params.slug);
   }
 
   if (!product) {
-    product = FALLBACK_PRODUCTS.find((p) => p.slug === params.slug) || FALLBACK_PRODUCTS[0];
+    notFound();
   }
 
   return (
