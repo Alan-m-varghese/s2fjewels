@@ -214,9 +214,9 @@ export default async function HomePage() {
           <div className="relative w-full h-full max-w-[1600px] mx-auto flex justify-end">
             <div className="w-full lg:w-[62%] h-full relative">
               <img
-                src="/images/desktop_crisp_hero.png"
-                alt="Model wearing fine gold jewelry"
-                className="w-full h-full object-cover object-top lg:object-right shrink-0 brightness-[1.02] contrast-[1.03]"
+                src="/images/premium_hero_model.png"
+                alt="Model in traditional Indian saree wearing fine Kundan necklace and floral earrings"
+                className="w-full h-full object-cover object-top lg:object-right shrink-0"
               />
 
               {/* Desktop Gradient Transition (Hidden on Mobile) */}
