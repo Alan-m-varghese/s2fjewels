@@ -12,7 +12,7 @@ const FALLBACK_PRODUCTS = [
     id: 'prod-1',
     name: 'Royal Solitaire Diamond Ring 18K',
     slug: 'royal-solitaire-diamond-ring-18k',
-    description: 'Masterpiece 1-carat brilliant cut natural solitaire ring crafted in certified 18k solid gold. Hallmarked by BIS with SGL authenticity certificate.',
+    description: 'Masterpiece 1-carat brilliant cut natural solitaire ring crafted in certified premium finish with SGL authenticity certificate.',
     price: 49999,
     stock: 8,
     images: [
@@ -25,7 +25,7 @@ const FALLBACK_PRODUCTS = [
     id: 'prod-2',
     name: 'Imperial Emerald & Diamond Pendant',
     slug: 'imperial-emerald-diamond-pendant',
-    description: 'Heritage royal emerald pendant surrounded by brilliant pavé diamonds. Finished in 22k yellow gold hallmark purity.',
+    description: 'Heritage royal emerald pendant surrounded by brilliant pavé diamonds. Finished in high-grade gold-tone plating.',
     price: 89999,
     stock: 5,
     images: [

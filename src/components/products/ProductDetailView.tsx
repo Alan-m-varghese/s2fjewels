@@ -57,9 +57,6 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
             alt={product.name}
             className="w-full h-full object-cover object-center"
           />
-          <span className="absolute top-4 left-4 bg-amber-700 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm flex items-center">
-            <Award className="w-3.5 h-3.5 mr-1" /> BIS Hallmarked
-          </span>
         </div>
 
         {images.length > 1 && (
@@ -116,7 +113,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
 
         {/* Description */}
         <p className="text-stone-600 text-sm leading-relaxed font-medium">
-          {product.description || 'Masterpiece fine jewelry creation finished in hallmarked gold and certified natural diamonds.'}
+          {product.description || 'Masterpiece fine jewelry creation thoughtfully designed to celebrate your special moments.'}
         </p>
 
         {/* Actions */}
