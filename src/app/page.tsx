@@ -145,8 +145,8 @@ export default async function HomePage() {
           <div className="relative w-full h-full max-w-[1600px] mx-auto flex justify-end">
             <div className="w-full lg:w-[62%] h-full relative">
               <img
-                src="/images/lumiere_hero_model.png"
-                alt="Lumière Model wearing fine gold jewelry"
+                src="/images/traditional_saree_hero.png"
+                alt="Model in traditional Indian saree wearing fine gold jewelry"
                 className="w-full h-full object-cover object-top lg:object-right"
               />
 
