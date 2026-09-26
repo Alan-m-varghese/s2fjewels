@@ -95,8 +95,8 @@ export default function Footer() {
           <div className="flex items-start space-x-3">
             <RefreshCw className="w-4 h-4 text-[#5C3637] shrink-0 mt-0.5" />
             <div>
-              <h5 className="font-bold text-[#3A2526] uppercase text-[10px] tracking-wider">30-DAY RETURNS</h5>
-              <p className="text-[11px] text-[#8C6B6D]">Hassle-free exchanges</p>
+              <h5 className="font-bold text-[#3A2526] uppercase text-[10px] tracking-wider">NO RETURNS POLICY</h5>
+              <p className="text-[11px] text-[#8C6B6D]">Unboxing video mandatory</p>
             </div>
           </div>
         </div>

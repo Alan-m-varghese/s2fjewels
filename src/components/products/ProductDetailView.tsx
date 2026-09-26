@@ -161,7 +161,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
           </div>
           <div className="flex items-center space-x-2">
             <RefreshCw className="w-5 h-5 text-amber-700 shrink-0" />
-            <span>Lifetime Exchange Policy</span>
+            <span>No Returns • Unboxing Video Must</span>
           </div>
           <div className="flex items-center space-x-2">
             <Award className="w-5 h-5 text-amber-700 shrink-0" />
