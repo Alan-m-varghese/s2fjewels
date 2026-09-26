@@ -133,10 +133,41 @@ export default async function HomePage() {
 
     // Build category slug -> image map from real products
     dbCategories.forEach((cat) => {
-      if (cat.products.length > 0 && cat.products[0].images.length > 0) {
-        categoryImageMap[cat.slug] = cat.products[0].images[0];
+      // Find suitable product for category (avoid matching neck chains to bracelets)
+      const validProduct = cat.products.find((p) => {
+        if (cat.slug === 'bracelets') {
+          const n = p.name.toLowerCase();
+          return (n.includes('bangle') || n.includes('kada') || n.includes('bracelet')) && !n.includes('chain') && !n.includes('anklet');
+        }
+        return true;
+      }) || cat.products[0];
+
+      if (validProduct && validProduct.images.length > 0) {
+        categoryImageMap[cat.slug] = validProduct.images[0];
       }
     });
+
+    // Specifically fetch a true Bangle / Kada product for Bracelets category
+    const trueBangleProduct = await prisma.product.findFirst({
+      where: {
+        status: 'ACTIVE',
+        OR: [
+          { name: { contains: 'Bangle', mode: 'insensitive' } },
+          { name: { contains: 'Kada', mode: 'insensitive' } },
+          { name: { contains: 'Bangles', mode: 'insensitive' } },
+          { name: { contains: 'Tennis Bracelet', mode: 'insensitive' } },
+        ],
+        NOT: [
+          { name: { contains: 'Chain', mode: 'insensitive' } },
+          { name: { contains: 'Anklet', mode: 'insensitive' } },
+        ],
+      },
+      include: { category: true },
+    });
+
+    if (trueBangleProduct && trueBangleProduct.images?.length > 0) {
+      categoryImageMap['bracelets'] = trueBangleProduct.images[0];
+    }
 
     // 2. Fetch Best Sellers
     const dbBestSellers = await prisma.product.findMany({
@@ -154,16 +185,31 @@ export default async function HomePage() {
     }
 
     // 3. Pick 4 DISTINCT product types for Curated Collections:
-    // (1 Necklace, 1 Ring/Bangle, 1 Earring, 1 Anklet/Bracelet)
+    // (1 Necklace, 1 Ring, 1 Earring, 1 Bangle/Kada)
     const distinctProductsMap: Record<string, any> = {};
     dbCategories.forEach((cat) => {
-      if (cat.products.length > 0) {
+      const validProduct = cat.products.find((p) => {
+        if (cat.slug === 'bracelets') {
+          const n = p.name.toLowerCase();
+          return (n.includes('bangle') || n.includes('kada') || n.includes('bracelet')) && !n.includes('chain') && !n.includes('anklet');
+        }
+        return true;
+      }) || cat.products[0];
+
+      if (validProduct) {
         distinctProductsMap[cat.slug] = {
-          ...cat.products[0],
+          ...validProduct,
           category: { name: cat.name, slug: cat.slug },
         };
       }
     });
+
+    if (trueBangleProduct) {
+      distinctProductsMap['bracelets'] = {
+        ...trueBangleProduct,
+        category: { name: 'Bracelets & Bangles', slug: 'bracelets' },
+      };
+    }
 
     // Priority order for the 4 collection cards
     const collectionSlugs = ['necklaces', 'rings', 'earrings', 'bracelets'];
