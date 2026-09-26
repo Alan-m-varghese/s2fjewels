@@ -194,25 +194,6 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
               </button>
             </div>
           </div>
-
-          {/* Guarantees */}
-          <div className="bg-neutral-900/60 border border-neutral-800/80 rounded-xl p-5 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center text-xs">
-            <div className="flex flex-col items-center space-y-1">
-              <Award className="w-5 h-5 text-amber-400" />
-              <span className="font-semibold text-neutral-200">100% Certified</span>
-              <span className="text-neutral-500">Hallmarked Purity</span>
-            </div>
-            <div className="flex flex-col items-center space-y-1">
-              <Truck className="w-5 h-5 text-amber-400" />
-              <span className="font-semibold text-neutral-200">Insured Delivery</span>
-              <span className="text-neutral-500">Tamper-evident Box</span>
-            </div>
-            <div className="flex flex-col items-center space-y-1">
-              <ShieldCheck className="w-5 h-5 text-amber-400" />
-              <span className="font-semibold text-neutral-200">Lifetime Guarantee</span>
-              <span className="text-neutral-500">Free Polishing</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>

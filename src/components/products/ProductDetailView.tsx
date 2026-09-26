@@ -148,26 +148,6 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
             </button>
           </div>
         </div>
-
-        {/* Trust Guarantees */}
-        <div className="grid grid-cols-2 gap-4 border-t border-stone-200 pt-6 text-xs text-stone-700">
-          <div className="flex items-center space-x-2">
-            <ShieldCheck className="w-5 h-5 text-amber-700 shrink-0" />
-            <span>BIS Hallmarked Gold</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Truck className="w-5 h-5 text-amber-700 shrink-0" />
-            <span>Free Insured Express Delivery</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RefreshCw className="w-5 h-5 text-amber-700 shrink-0" />
-            <span>No Returns • Unboxing Video Must</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Award className="w-5 h-5 text-amber-700 shrink-0" />
-            <span>SGL/IGI Certificate Included</span>
-          </div>
-        </div>
       </div>
     </div>
   );
