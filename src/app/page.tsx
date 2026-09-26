@@ -124,8 +124,26 @@ export default async function HomePage() {
   let bestSellers = FALLBACK_BEST_SELLERS;
   let categoryImageMap: Record<string, string> = {};
   let featuredProducts: any[] = [];
+  let ourStoryImage = 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=800&q=80';
 
   try {
+    // Fetch authentic product image for Our Story section
+    const storyProduct = await prisma.product.findFirst({
+      where: {
+        status: 'ACTIVE',
+        OR: [
+          { name: { contains: 'Kundan', mode: 'insensitive' } },
+          { name: { contains: 'Royale', mode: 'insensitive' } },
+          { name: { contains: 'Heritage', mode: 'insensitive' } },
+          { name: { contains: 'Floral', mode: 'insensitive' } },
+        ],
+      },
+      orderBy: { id: 'asc' },
+    });
+
+    if (storyProduct && storyProduct.images?.length > 0) {
+      ourStoryImage = storyProduct.images[0];
+    }
     // 1. Fetch categories with sample active products
     const dbCategories = await prisma.category.findMany({
       include: {
@@ -473,8 +491,8 @@ export default async function HomePage() {
           <div className="lg:col-span-5 max-w-md mx-auto lg:max-w-none w-full">
             <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-xl border-4 border-white bg-[#EFE3DA]">
               <img
-                src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=800&q=80"
-                alt="Jewelry artisan craftsmanship"
+                src={ourStoryImage}
+                alt="S2F Jewels fine jewelry craftsmanship"
                 className="w-full h-full object-cover"
               />
             </div>
