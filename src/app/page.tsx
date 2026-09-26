@@ -564,7 +564,7 @@ export default async function HomePage() {
               &quot;The quality is exceptional and the packaging is so beautiful. I felt so special opening my order.&quot;
             </p>
             <div>
-              <p className="text-xs font-bold text-[#3A2526]">— Emily R.</p>
+              <p className="text-xs font-bold text-[#3A2526]">— Malavika R </p>
               <div className="flex justify-center text-amber-500 space-x-0.5 mt-1">
                 <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
                 <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
@@ -580,7 +580,7 @@ export default async function HomePage() {
               &quot;I wear my necklace every day and get compliments all the time. Absolutely dreamy!&quot;
             </p>
             <div>
-              <p className="text-xs font-bold text-[#3A2526]">— Sophia L.</p>
+              <p className="text-xs font-bold text-[#3A2526]">— Ambika Ramesh</p>
               <div className="flex justify-center text-amber-500 space-x-0.5 mt-1">
                 <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
                 <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
@@ -596,7 +596,7 @@ export default async function HomePage() {
               &quot;The perfect gift! My wife loved it and the customer service was amazing.&quot;
             </p>
             <div>
-              <p className="text-xs font-bold text-[#3A2526]">— Daniel K.</p>
+              <p className="text-xs font-bold text-[#3A2526]">— Sreeja P </p>
               <div className="flex justify-center text-amber-500 space-x-0.5 mt-1">
                 <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
                 <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
