@@ -193,35 +193,51 @@ export default async function HomePage() {
       categoryImageMap['wedding'] = necklacesCategory.products[0].images[0];
     }
 
-    // 2. Collect all product IDs used in Category Circles & Curated Collections
-    const usedProductIds = new Set<string>();
-    if (trueBangleProduct?.id) usedProductIds.add(trueBangleProduct.id);
+    // 2. Fetch 5 BEST SELLERS from 5 DISTINCT CATEGORIES, excluding cover images
+    const coverImageUrls = new Set(Object.values(categoryImageMap));
+    const bestSellersList: any[] = [];
+    const usedBestSellerCatSlugs = new Set<string>();
 
     dbCategories.forEach((cat) => {
-      cat.products.forEach((p) => {
-        // If image is used as category cover, mark product ID as used
-        if (p.images.some((img) => Object.values(categoryImageMap).includes(img))) {
-          usedProductIds.add(p.id);
+      const nonCoverProduct = cat.products.find((p) => {
+        const isCover = p.images.some((img) => coverImageUrls.has(img));
+        if (cat.slug === 'bracelets') {
+          const n = p.name.toLowerCase();
+          return !isCover && (n.includes('bangle') || n.includes('kada') || n.includes('bracelet')) && !n.includes('chain') && !n.includes('anklet');
         }
+        return !isCover;
       });
+
+      if (nonCoverProduct && !usedBestSellerCatSlugs.has(cat.slug)) {
+        bestSellersList.push({
+          ...nonCoverProduct,
+          price: Number(nonCoverProduct.price),
+          category: { name: cat.name, slug: cat.slug },
+        });
+        usedBestSellerCatSlugs.add(cat.slug);
+      }
     });
 
-    // Fetch 5 completely FRESH products (not used as category cover images) for Best Sellers
-    const freshBestSellers = await prisma.product.findMany({
-      where: {
-        status: 'ACTIVE',
-        id: { notIn: Array.from(usedProductIds) },
-      },
+    // Fetch remaining active non-cover products across database to complete 5 items
+    const allActiveProducts = await prisma.product.findMany({
+      where: { status: 'ACTIVE' },
       include: { category: true },
-      take: 5,
-      orderBy: { createdAt: 'desc' },
+      take: 20,
+      orderBy: { id: 'asc' },
     });
 
-    if (freshBestSellers.length > 0) {
-      bestSellers = freshBestSellers.map((p) => ({
-        ...p,
-        price: Number(p.price),
-      })) as any;
+    allActiveProducts.forEach((p) => {
+      const isCover = p.images.some((img) => coverImageUrls.has(img));
+      if (!isCover && bestSellersList.length < 5 && !bestSellersList.some((bp) => bp.id === p.id)) {
+        bestSellersList.push({
+          ...p,
+          price: Number(p.price),
+        });
+      }
+    });
+
+    if (bestSellersList.length > 0) {
+      bestSellers = bestSellersList.slice(0, 5);
     }
 
     // 3. Pick 4 DISTINCT product types for Curated Collections:
@@ -258,8 +274,8 @@ export default async function HomePage() {
       .filter(Boolean);
 
     // Fallback if some categories don't have products yet
-    if (featuredProducts.length < 4 && freshBestSellers.length > 0) {
-      freshBestSellers.forEach((p: any) => {
+    if (featuredProducts.length < 4 && allActiveProducts.length > 0) {
+      allActiveProducts.forEach((p: any) => {
         if (featuredProducts.length < 4 && !featuredProducts.some((fp) => fp.id === p.id)) {
           featuredProducts.push(p);
         }
