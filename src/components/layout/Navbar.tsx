@@ -42,7 +42,7 @@ export default function Navbar() {
       {/* Main Header Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          
+
           {/* Left Side Links (Desktop) */}
           <nav className="hidden lg:flex items-center space-x-8 text-xs font-semibold tracking-wider text-[#5C3637] uppercase">
             <Link href="/products" className="hover:text-[#4A2B2C] transition-colors">
@@ -71,7 +71,7 @@ export default function Navbar() {
                 S2F JEWELS
               </span>
               <span className="text-[8px] sm:text-[9px] tracking-[0.25em] text-[#8C6B6D] uppercase font-semibold block mt-1">
-                HAUTE JOAILLERIE
+
               </span>
             </div>
           </Link>

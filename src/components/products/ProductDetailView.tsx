@@ -102,7 +102,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
 
         {/* Pricing & Stock */}
         <div className="p-4 bg-stone-50 border border-stone-200 rounded-2xl space-y-1">
-          <span className="text-xs text-stone-500 font-medium">Inclusive of all taxes & insurance</span>
+          <span className="text-xs text-stone-500 font-medium">Inclusive of all taxes • ₹100 Flat Delivery Charge</span>
           <div className="flex items-baseline space-x-3">
             <span className="font-serif text-3xl font-bold text-stone-900">{formattedPrice}</span>
             <span className="text-xs text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full font-bold border border-emerald-200">

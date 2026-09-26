@@ -53,7 +53,8 @@ export async function POST(req: Request) {
     }
 
     // Verify products & calculate total
-    let totalAmount = 0;
+    const DELIVERY_FEE = 100;
+    let itemsTotal = 0;
     const orderItemData = [];
 
     for (const item of items) {
@@ -66,7 +67,7 @@ export async function POST(req: Request) {
       }
 
       const itemPrice = Number(product.price);
-      totalAmount += itemPrice * item.quantity;
+      itemsTotal += itemPrice * item.quantity;
 
       orderItemData.push({
         productId: product.id,
@@ -74,6 +75,8 @@ export async function POST(req: Request) {
         priceAtPurchase: itemPrice,
       });
     }
+
+    const totalAmount = itemsTotal + DELIVERY_FEE;
 
     // Create local Order record with status PENDING
     const order = await prisma.order.create({

@@ -9,7 +9,7 @@ import { ShieldCheck, Lock, CreditCard, ArrowLeft, Loader2 } from 'lucide-react'
 export default function CheckoutPage() {
   const router = useRouter();
   const { data: session } = useSession();
-  const { items, cartTotal, clearCart } = useCart();
+  const { items, cartTotal, deliveryFee, grandTotal, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,7 +25,13 @@ export default function CheckoutPage() {
     country: 'India',
   });
 
-  const formattedTotal = cartTotal.toLocaleString('en-IN', {
+  const formattedSubtotal = cartTotal.toLocaleString('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  });
+
+  const formattedTotal = grandTotal.toLocaleString('en-IN', {
     style: 'currency',
     currency: 'INR',
     maximumFractionDigits: 0,
@@ -299,8 +305,12 @@ export default function CheckoutPage() {
 
               <div className="border-t border-stone-200 pt-3 space-y-2 text-sm">
                 <div className="flex justify-between text-stone-600 font-medium">
-                  <span>Insured Express Courier</span>
-                  <span className="text-emerald-700 font-bold">FREE</span>
+                  <span>Subtotal</span>
+                  <span className="font-bold text-stone-900">{formattedSubtotal}</span>
+                </div>
+                <div className="flex justify-between text-stone-600 font-medium">
+                  <span>Delivery Charge</span>
+                  <span className="text-amber-900 font-bold">₹100</span>
                 </div>
                 <div className="flex justify-between text-base font-bold text-stone-900 pt-2 border-t border-stone-200">
                   <span>Total Payable</span>

@@ -8,9 +8,15 @@ import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, ShieldCheck } from 'lucid
 
 export default function CartPage() {
   const router = useRouter();
-  const { items, updateQuantity, removeFromCart, cartTotal, clearCart } = useCart();
+  const { items, updateQuantity, removeFromCart, cartTotal, deliveryFee, grandTotal } = useCart();
 
-  const formattedTotal = cartTotal.toLocaleString('en-IN', {
+  const formattedSubtotal = cartTotal.toLocaleString('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  });
+
+  const formattedGrandTotal = grandTotal.toLocaleString('en-IN', {
     style: 'currency',
     currency: 'INR',
     maximumFractionDigits: 0,
@@ -106,15 +112,15 @@ export default function CartPage() {
               <div className="space-y-3 text-sm text-stone-600">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span className="font-bold text-stone-900">{formattedTotal}</span>
+                  <span className="font-bold text-stone-900">{formattedSubtotal}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Insured Express Shipping</span>
-                  <span className="text-emerald-700 font-bold">FREE</span>
+                  <span>Delivery Charge</span>
+                  <span className="text-amber-900 font-bold">₹100</span>
                 </div>
                 <div className="flex justify-between border-t border-stone-200 pt-3 text-base font-bold text-stone-900">
                   <span>Total Amount</span>
-                  <span className="text-amber-800 text-xl font-serif">{formattedTotal}</span>
+                  <span className="text-amber-800 text-xl font-serif">{formattedGrandTotal}</span>
                 </div>
               </div>
 

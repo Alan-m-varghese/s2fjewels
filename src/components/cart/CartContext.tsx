@@ -23,6 +23,8 @@ interface CartContextType {
   clearCart: () => void;
   cartCount: number;
   cartTotal: number;
+  deliveryFee: number;
+  grandTotal: number;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -95,6 +97,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     (acc, item) => acc + Number(item.product.price) * item.quantity,
     0
   );
+  const deliveryFee = items.length > 0 ? 100 : 0;
+  const grandTotal = cartTotal + deliveryFee;
 
   return (
     <CartContext.Provider
@@ -106,6 +110,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         clearCart,
         cartCount,
         cartTotal,
+        deliveryFee,
+        grandTotal,
       }}
     >
       {children}
