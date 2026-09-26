@@ -120,25 +120,62 @@ export default async function HomePage() {
   let featuredProducts: any[] = [];
 
   try {
-    const dbProducts = await prisma.product.findMany({
+    // 1. Fetch categories with sample active products
+    const dbCategories = await prisma.category.findMany({
+      include: {
+        products: {
+          where: { status: 'ACTIVE' },
+          take: 3,
+          orderBy: { id: 'asc' },
+        },
+      },
+    });
+
+    // Build category slug -> image map from real products
+    dbCategories.forEach((cat) => {
+      if (cat.products.length > 0 && cat.products[0].images.length > 0) {
+        categoryImageMap[cat.slug] = cat.products[0].images[0];
+      }
+    });
+
+    // 2. Fetch Best Sellers
+    const dbBestSellers = await prisma.product.findMany({
       where: { status: 'ACTIVE' },
       include: { category: true },
-      take: 10,
+      take: 5,
       orderBy: { createdAt: 'desc' },
     });
 
-    if (dbProducts.length > 0) {
-      bestSellers = dbProducts.slice(0, 5).map((p) => ({
+    if (dbBestSellers.length > 0) {
+      bestSellers = dbBestSellers.map((p) => ({
         ...p,
         price: Number(p.price),
       })) as any;
+    }
 
-      featuredProducts = dbProducts.slice(0, 4);
+    // 3. Pick 4 DISTINCT product types for Curated Collections:
+    // (1 Necklace, 1 Ring/Bangle, 1 Earring, 1 Anklet/Bracelet)
+    const distinctProductsMap: Record<string, any> = {};
+    dbCategories.forEach((cat) => {
+      if (cat.products.length > 0) {
+        distinctProductsMap[cat.slug] = {
+          ...cat.products[0],
+          category: { name: cat.name, slug: cat.slug },
+        };
+      }
+    });
 
-      // Build mapping from category slug to latest product image
-      dbProducts.forEach((p) => {
-        if (p.category?.slug && p.images?.length > 0 && !categoryImageMap[p.category.slug]) {
-          categoryImageMap[p.category.slug] = p.images[0];
+    // Priority order for the 4 collection cards
+    const collectionSlugs = ['necklaces', 'rings', 'earrings', 'bracelets'];
+    featuredProducts = collectionSlugs
+      .map((slug) => distinctProductsMap[slug])
+      .filter(Boolean);
+
+    // Fallback if some categories don't have products yet
+    if (featuredProducts.length < 4 && dbBestSellers.length > 0) {
+      dbBestSellers.forEach((p) => {
+        if (featuredProducts.length < 4 && !featuredProducts.some((fp) => fp.id === p.id)) {
+          featuredProducts.push(p);
         }
       });
     }
@@ -146,13 +183,13 @@ export default async function HomePage() {
     console.warn('Database fallback loaded for HomePage.');
   }
 
-  // Dynamically attach real product images to circular categories
+  // Dynamically attach real category product images
   const categoriesList = CIRCULAR_CATEGORIES.map((cat) => ({
     ...cat,
     img: categoryImageMap[cat.slug] || cat.img,
   }));
 
-  // Dynamically map curated collections to real store products
+  // Dynamically map curated collections to 4 distinct product types
   const curatedList = CURATED_COLLECTIONS.map((col, idx) => {
     const prod = featuredProducts[idx];
     if (prod && prod.images?.length > 0) {
