@@ -10,31 +10,37 @@ const CIRCULAR_CATEGORIES = [
   {
     name: 'NECKLACES',
     slug: 'necklaces',
+    key: 'necklaces',
     img: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=400&q=80',
   },
   {
     name: 'EARRINGS',
     slug: 'earrings',
+    key: 'earrings',
     img: 'https://images.unsplash.com/photo-1635767798638-3e25273a8236?auto=format&fit=crop&w=400&q=80',
   },
   {
     name: 'RINGS',
     slug: 'rings',
+    key: 'rings',
     img: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=400&q=80',
   },
   {
     name: 'BRACELETS',
     slug: 'bracelets',
+    key: 'bracelets',
     img: 'https://images.unsplash.com/photo-1611591475111-a83d7350c33d?auto=format&fit=crop&w=400&q=80',
   },
   {
     name: 'FINE GIFTS',
     slug: 'rings',
+    key: 'fine-gifts',
     img: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=400&q=80',
   },
   {
     name: 'WEDDING',
     slug: 'necklaces',
+    key: 'wedding',
     img: 'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=400&q=80',
   },
 ];
@@ -169,6 +175,24 @@ export default async function HomePage() {
       categoryImageMap['bracelets'] = trueBangleProduct.images[0];
     }
 
+    // Ensure FINE GIFTS and WEDDING get unique distinct product images
+    const ringsCategory = dbCategories.find((c) => c.slug === 'rings');
+    const necklacesCategory = dbCategories.find((c) => c.slug === 'necklaces');
+
+    // FINE GIFTS gets a distinct 2nd ring or gift product
+    if (ringsCategory && ringsCategory.products.length > 1 && ringsCategory.products[1].images.length > 0) {
+      categoryImageMap['fine-gifts'] = ringsCategory.products[1].images[0];
+    } else if (ringsCategory && ringsCategory.products[0]?.images.length > 0) {
+      categoryImageMap['fine-gifts'] = ringsCategory.products[0].images[0];
+    }
+
+    // WEDDING gets a distinct grand bridal necklace / choker product
+    if (necklacesCategory && necklacesCategory.products.length > 1 && necklacesCategory.products[1].images.length > 0) {
+      categoryImageMap['wedding'] = necklacesCategory.products[1].images[0];
+    } else if (necklacesCategory && necklacesCategory.products[0]?.images.length > 0) {
+      categoryImageMap['wedding'] = necklacesCategory.products[0].images[0];
+    }
+
     // 2. Fetch Best Sellers
     const dbBestSellers = await prisma.product.findMany({
       where: { status: 'ACTIVE' },
@@ -229,10 +253,10 @@ export default async function HomePage() {
     console.warn('Database fallback loaded for HomePage.');
   }
 
-  // Dynamically attach real category product images
+  // Dynamically attach real category product images (matching by key or slug)
   const categoriesList = CIRCULAR_CATEGORIES.map((cat) => ({
     ...cat,
-    img: categoryImageMap[cat.slug] || cat.img,
+    img: categoryImageMap[cat.key || cat.slug] || cat.img,
   }));
 
   // Dynamically map curated collections to 4 distinct product types
