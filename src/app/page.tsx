@@ -193,63 +193,35 @@ export default async function HomePage() {
       categoryImageMap['wedding'] = necklacesCategory.products[0].images[0];
     }
 
-    // 2. Fetch Best Sellers across 5 DISTINCT product categories
-    const diverseBestSellersMap: Record<string, any> = {};
-    const categoryOrder = ['necklaces', 'earrings', 'rings', 'bracelets'];
+    // 2. Collect all product IDs used in Category Circles & Curated Collections
+    const usedProductIds = new Set<string>();
+    if (trueBangleProduct?.id) usedProductIds.add(trueBangleProduct.id);
 
     dbCategories.forEach((cat) => {
-      const validProduct = cat.products.find((p) => {
-        if (cat.slug === 'bracelets') {
-          const n = p.name.toLowerCase();
-          return (n.includes('bangle') || n.includes('kada') || n.includes('bracelet')) && !n.includes('chain') && !n.includes('anklet');
+      cat.products.forEach((p) => {
+        // If image is used as category cover, mark product ID as used
+        if (p.images.some((img) => Object.values(categoryImageMap).includes(img))) {
+          usedProductIds.add(p.id);
         }
-        return true;
-      }) || cat.products[0];
-
-      if (validProduct) {
-        diverseBestSellersMap[cat.slug] = {
-          ...validProduct,
-          price: Number(validProduct.price),
-          category: { name: cat.name, slug: cat.slug },
-        };
-      }
+      });
     });
 
-    if (trueBangleProduct) {
-      diverseBestSellersMap['bracelets'] = {
-        ...trueBangleProduct,
-        price: Number(trueBangleProduct.price),
-        category: { name: 'Bracelets & Bangles', slug: 'bracelets' },
-      };
-    }
-
-    // Fetch all active products ordered by ID to pick a 5th unique category item
-    const allActiveProducts = await prisma.product.findMany({
-      where: { status: 'ACTIVE' },
+    // Fetch 5 completely FRESH products (not used as category cover images) for Best Sellers
+    const freshBestSellers = await prisma.product.findMany({
+      where: {
+        status: 'ACTIVE',
+        id: { notIn: Array.from(usedProductIds) },
+      },
       include: { category: true },
-      take: 15,
-      orderBy: { id: 'asc' },
+      take: 5,
+      orderBy: { createdAt: 'desc' },
     });
 
-    let bestSellersList: any[] = [];
-    categoryOrder.forEach((slug) => {
-      if (diverseBestSellersMap[slug]) {
-        bestSellersList.push(diverseBestSellersMap[slug]);
-      }
-    });
-
-    // Add remaining distinct products so we have 5 diverse items
-    allActiveProducts.forEach((p) => {
-      if (bestSellersList.length < 5 && !bestSellersList.some((bp) => bp.id === p.id)) {
-        bestSellersList.push({
-          ...p,
-          price: Number(p.price),
-        });
-      }
-    });
-
-    if (bestSellersList.length > 0) {
-      bestSellers = bestSellersList.slice(0, 5);
+    if (freshBestSellers.length > 0) {
+      bestSellers = freshBestSellers.map((p) => ({
+        ...p,
+        price: Number(p.price),
+      })) as any;
     }
 
     // 3. Pick 4 DISTINCT product types for Curated Collections:
@@ -286,8 +258,8 @@ export default async function HomePage() {
       .filter(Boolean);
 
     // Fallback if some categories don't have products yet
-    if (featuredProducts.length < 4 && allActiveProducts.length > 0) {
-      allActiveProducts.forEach((p: any) => {
+    if (featuredProducts.length < 4 && freshBestSellers.length > 0) {
+      freshBestSellers.forEach((p: any) => {
         if (featuredProducts.length < 4 && !featuredProducts.some((fp) => fp.id === p.id)) {
           featuredProducts.push(p);
         }
