@@ -115,57 +115,87 @@ const FALLBACK_BEST_SELLERS = [
 ];
 
 export default async function HomePage() {
-  let bestSellers: any[] = [];
+  let bestSellers = FALLBACK_BEST_SELLERS;
+  let categoryImageMap: Record<string, string> = {};
+  let featuredProducts: any[] = [];
 
   try {
     const dbProducts = await prisma.product.findMany({
       where: { status: 'ACTIVE' },
       include: { category: true },
-      take: 5,
+      take: 10,
       orderBy: { createdAt: 'desc' },
     });
 
-    bestSellers = dbProducts.map((p) => ({
-      ...p,
-      price: Number(p.price),
-    }));
+    if (dbProducts.length > 0) {
+      bestSellers = dbProducts.slice(0, 5).map((p) => ({
+        ...p,
+        price: Number(p.price),
+      })) as any;
+
+      featuredProducts = dbProducts.slice(0, 4);
+
+      // Build mapping from category slug to latest product image
+      dbProducts.forEach((p) => {
+        if (p.category?.slug && p.images?.length > 0 && !categoryImageMap[p.category.slug]) {
+          categoryImageMap[p.category.slug] = p.images[0];
+        }
+      });
+    }
   } catch (err) {
-    console.warn('Database error, loading fallback for HomePage:', err);
-    bestSellers = FALLBACK_BEST_SELLERS as any[];
+    console.warn('Database fallback loaded for HomePage.');
   }
+
+  // Dynamically attach real product images to circular categories
+  const categoriesList = CIRCULAR_CATEGORIES.map((cat) => ({
+    ...cat,
+    img: categoryImageMap[cat.slug] || cat.img,
+  }));
+
+  // Dynamically map curated collections to real store products
+  const curatedList = CURATED_COLLECTIONS.map((col, idx) => {
+    const prod = featuredProducts[idx];
+    if (prod && prod.images?.length > 0) {
+      return {
+        title: prod.name,
+        sub: `${prod.category?.name || 'COLLECTION'}`,
+        img: prod.images[0],
+        slug: prod.category?.slug || col.slug,
+      };
+    }
+    return col;
+  });
 
   return (
     <div className="bg-[#FAF4F0] space-y-12 sm:space-y-20 pb-16">
-      
-      {/* 1. HERO BANNER (FULL BLEED OVERLAY LAYOUT) */}
-      <section className="relative w-full min-h-[500px] sm:min-h-[580px] lg:min-h-[640px] bg-[#FAF4F0] flex items-center overflow-hidden border-b border-[#EFE3DA]">
-        
-        {/* Full-Bleed Background Image Container */}
+
+      {/* 1. HERO BANNER (BEAUTIFUL MOBILE TEXT OVERLAY & FULL-BLEED DESKTOP) */}
+      <section className="relative w-full min-h-[500px] sm:min-h-[560px] lg:min-h-[600px] bg-[#F4ECE5] flex items-center overflow-hidden border-b border-[#EFE3DA]">
+
+        {/* Background Model Image (Full Bleed on Desktop, Full Image on Mobile) */}
         <div className="absolute inset-0 w-full h-full">
           <div className="relative w-full h-full max-w-[1600px] mx-auto flex justify-end">
-            <div className="w-full lg:w-[65%] h-full relative">
+            <div className="w-full lg:w-[62%] h-full relative">
               <img
                 src="/images/desktop_crisp_hero.png"
-                alt="Model in golden-ivory silk saree wearing fine Kundan gold necklace and earrings"
+                alt="Model wearing fine gold jewelry"
                 className="w-full h-full object-cover object-top lg:object-right shrink-0 brightness-[1.02] contrast-[1.03]"
               />
 
-              {/* Seamless Soft Desktop Fade Gradient Overlay */}
-              <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-[#FAF4F0] via-[#FAF4F0]/70 to-transparent hidden lg:block pointer-events-none" />
+              {/* Desktop Gradient Transition (Hidden on Mobile) */}
+              <div className="absolute inset-y-0 left-0 w-48 bg-gradient-to-r from-[#F4ECE5] via-[#F4ECE5]/80 to-transparent hidden lg:block" />
             </div>
           </div>
         </div>
 
-        {/* Mobile Soft Scrim Gradient Overlay for 100% Legibility */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#2A1819]/85 via-[#2A1819]/45 to-transparent lg:hidden z-10" />
+        {/* Mobile Soft Scrim Gradient Overlay (Ensures 100% Text Legibility on Mobile) */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#2A1819]/85 via-[#2A1819]/40 to-transparent lg:hidden z-10" />
 
-        {/* Text & Action Content Overlay */}
-        <div className="relative z-20 max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 w-full py-16 lg:py-24 flex items-end lg:items-center min-h-[500px] sm:min-h-[580px] lg:min-h-0">
-          <div className="max-w-lg space-y-4 sm:space-y-6 text-left">
-            <span className="inline-block text-[11px] sm:text-xs tracking-[0.25em] font-semibold text-[#EFE3DA] lg:text-[#8C6B6D] uppercase">
-              Haute Joaillerie Collection
-            </span>
-            
+        {/* Content Container (Left Overlay on Desktop & Elegant Bottom Overlay on Mobile) */}
+        <div className="relative z-20 max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 w-full py-16 lg:py-24 flex items-end lg:items-center min-h-[500px] sm:min-h-[560px] lg:min-h-0">
+          <div className="max-w-lg space-y-4 sm:space-y-6 lg:pl-4 text-left">
+
+            {/* Headline */}
             <h1 className="font-normal leading-[1.05]">
               <span className="font-serif text-4xl sm:text-6xl lg:text-7xl block tracking-tight text-white lg:text-[#3A2526]">
                 Made to be
@@ -175,18 +205,21 @@ export default async function HomePage() {
               </span>
             </h1>
 
-            <p className="text-[#EFE3DA] lg:text-[#6E5557] text-xs sm:text-sm font-normal tracking-wide leading-relaxed max-w-sm">
-              Handcrafted fine Indian jewelry for life&apos;s most beautiful moments.
+            {/* Subheading */}
+            <p className="text-[#EFE3DA] lg:text-[#8C6B6D] text-xs sm:text-sm font-normal tracking-wide leading-relaxed max-w-xs">
+              Timeless jewelry for life&apos;s<br className="hidden sm:block" /> most beautiful moments.
             </p>
 
-            <div className="pt-2 flex flex-wrap items-center gap-3">
+            {/* CTA Button */}
+            <div className="pt-2">
               <Link
                 href="/products"
-                className="inline-block bg-white lg:bg-[#4A2525] text-[#3A2526] lg:text-white hover:bg-[#FAF4F0] lg:hover:bg-[#321717] font-bold lg:font-medium text-[11px] tracking-[0.2em] uppercase px-7 py-3.5 sm:px-8 transition-all shadow-md"
+                className="inline-block bg-white lg:bg-[#4A2525] text-[#3A2526] lg:text-white hover:bg-[#FAF4F0] lg:hover:bg-[#381B1B] font-bold lg:font-medium text-[11px] tracking-[0.2em] uppercase px-7 py-3.5 sm:px-8 transition-all shadow-md"
               >
                 SHOP THE COLLECTION
               </Link>
             </div>
+
           </div>
         </div>
 
@@ -195,6 +228,13 @@ export default async function HomePage() {
           <span className="text-[6.5px] sm:text-[7.5px] tracking-[0.15em] block text-[#3A2526] font-bold">TIMELESS BEAUTY</span>
           <Heart className="w-3 h-3 sm:w-4 sm:h-4 text-[#4A2525] fill-[#4A2525] my-0.5 sm:my-1" />
           <span className="text-[6.5px] sm:text-[7.5px] tracking-[0.15em] block text-[#3A2526] font-bold">MADE WITH LOVE</span>
+        </div>
+
+        {/* Hero Carousel Dots at Bottom Center */}
+        <div className="absolute bottom-4 inset-x-0 z-20 flex justify-center items-center space-x-2">
+          <span className="w-2.5 h-2.5 rounded-full bg-white lg:bg-[#4A2525]"></span>
+          <span className="w-2.5 h-2.5 rounded-full bg-white/50 lg:bg-[#D8C4B6]"></span>
+          <span className="w-2.5 h-2.5 rounded-full bg-white/50 lg:bg-[#D8C4B6]"></span>
         </div>
 
       </section>
@@ -208,7 +248,7 @@ export default async function HomePage() {
         </div>
 
         <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-6 text-center">
-          {CIRCULAR_CATEGORIES.map((cat, idx) => (
+          {categoriesList.map((cat, idx) => (
             <Link
               key={idx}
               href={`/products?category=${cat.slug}`}
@@ -238,7 +278,7 @@ export default async function HomePage() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-          {CURATED_COLLECTIONS.map((col, idx) => (
+          {curatedList.map((col, idx) => (
             <Link
               key={idx}
               href={`/products?category=${col.slug}`}
@@ -249,8 +289,8 @@ export default async function HomePage() {
                 alt={col.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#3A2526]/80 via-transparent to-transparent flex flex-col justify-end p-3 sm:p-6 text-center text-white">
-                <h3 className="font-serif text-lg sm:text-2xl font-normal italic tracking-wide">
+              <div className="absolute inset-0 bg-gradient-to-t from-[#3A2526]/85 via-black/20 to-transparent flex flex-col justify-end p-3 sm:p-6 text-center text-white">
+                <h3 className="font-serif text-base sm:text-xl font-normal italic tracking-wide drop-shadow-sm">
                   {col.title}
                 </h3>
                 <span className="text-[8px] sm:text-[9px] tracking-[0.2em] font-bold uppercase text-stone-200 mt-0.5">
@@ -290,7 +330,7 @@ export default async function HomePage() {
       {/* 5. OUR STORY SECTION */}
       <section id="our-story" className="bg-[#F5EBE4] border-y border-[#EFE3DA] py-12 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          
+
           <div className="lg:col-span-5 max-w-md mx-auto lg:max-w-none w-full">
             <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-xl border-4 border-white bg-[#EFE3DA]">
               <img
