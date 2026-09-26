@@ -137,83 +137,66 @@ export default async function HomePage() {
   return (
     <div className="bg-[#FAF4F0] space-y-12 sm:space-y-20 pb-16">
       
-      {/* 1. HERO BANNER (BEAUTIFUL MOBILE TEXT OVERLAY & FULL-BLEED DESKTOP) */}
-      <section className="relative w-full min-h-[500px] sm:min-h-[560px] lg:min-h-[600px] bg-[#F4ECE5] flex items-center overflow-hidden border-b border-[#EFE3DA]">
-        
-        {/* Background Model Image (Full Bleed on Desktop, Full Image on Mobile) */}
-        <div className="absolute inset-0 w-full h-full">
-          <div className="relative w-full h-full max-w-[1600px] mx-auto flex justify-end">
-            <div className="w-full lg:w-[62%] h-full relative">
-              <img
-                src="/images/traditional_saree_hero.png"
-                alt="Model in traditional Indian saree wearing fine gold jewelry"
-                className="w-full h-full object-cover object-top lg:object-right"
-              />
-
-              {/* Desktop Gradient Transition (Hidden on Mobile) */}
-              <div className="absolute inset-y-0 left-0 w-48 bg-gradient-to-r from-[#F4ECE5] via-[#F4ECE5]/80 to-transparent hidden lg:block" />
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Soft Scrim Gradient Overlay (Ensures 100% Text Legibility on Mobile) */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#2A1819]/85 via-[#2A1819]/40 to-transparent lg:hidden z-10" />
-
-        {/* Soft Floral Accents (Desktop Only) */}
-        <div className="absolute top-0 left-0 w-80 h-full pointer-events-none opacity-40 mix-blend-multiply z-10 hidden lg:block">
-          <img
-            src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?auto=format&fit=crop&w=400&q=80"
-            alt="Soft Pink Roses"
-            className="w-full h-full object-cover object-left opacity-30"
-          />
-        </div>
-
-        {/* Content Container (Left Overlay on Desktop & Elegant Bottom Overlay on Mobile) */}
-        <div className="relative z-20 max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 w-full py-16 lg:py-24 flex items-end lg:items-center min-h-[500px] sm:min-h-[560px] lg:min-h-0">
-          <div className="max-w-lg space-y-4 sm:space-y-6 lg:pl-4 text-left">
+      {/* 1. HERO BANNER (CLEAN LUXURY SPLIT DESIGN) */}
+      <section className="relative w-full bg-[#FAF4F0] overflow-hidden border-b border-[#EFE3DA]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 items-center min-h-[520px] sm:min-h-[580px] lg:min-h-[620px] py-8 lg:py-0 gap-8">
             
-            {/* Headline */}
-            <h1 className="font-normal leading-[1.05]">
-              <span className="font-serif text-4xl sm:text-6xl lg:text-7xl block tracking-tight text-white lg:text-[#3A2526]">
-                Made to be
+            {/* Left Content Column */}
+            <div className="lg:col-span-6 z-20 py-8 lg:py-12 lg:pr-8 space-y-5 text-left">
+              <span className="inline-block text-[11px] sm:text-xs tracking-[0.25em] font-semibold text-[#8C6B6D] uppercase">
+                Haute Joaillerie Collection
               </span>
-              <span className="font-serif italic font-normal text-5xl sm:text-7xl lg:text-8xl block mt-0.5 text-white lg:text-[#3A2526]">
-                Cherished
-              </span>
-            </h1>
+              
+              <h1 className="font-serif leading-[1.08] text-[#3A2526]">
+                <span className="text-4xl sm:text-6xl lg:text-7xl block tracking-tight">
+                  Made to be
+                </span>
+                <span className="italic font-normal text-5xl sm:text-7xl lg:text-8xl block mt-1">
+                  Cherished
+                </span>
+              </h1>
 
-            {/* Subheading */}
-            <p className="text-[#EFE3DA] lg:text-[#8C6B6D] text-xs sm:text-sm font-normal tracking-wide leading-relaxed max-w-xs">
-              Timeless jewelry for life&apos;s<br className="hidden sm:block" /> most beautiful moments.
-            </p>
+              <p className="text-[#6E5557] text-xs sm:text-sm font-normal tracking-wide leading-relaxed max-w-md pt-1">
+                Handcrafted fine Indian jewelry for life&apos;s most memorable moments. Discover timeless Kundan sets, beaded chains, and elegant kadas.
+              </p>
 
-            {/* CTA Button */}
-            <div className="pt-2">
-              <Link
-                href="/products"
-                className="inline-block bg-white lg:bg-[#4A2525] text-[#3A2526] lg:text-white hover:bg-[#FAF4F0] lg:hover:bg-[#381B1B] font-bold lg:font-medium text-[11px] tracking-[0.2em] uppercase px-7 py-3.5 sm:px-8 transition-all shadow-md"
-              >
-                SHOP THE COLLECTION
-              </Link>
+              <div className="pt-4 flex flex-wrap items-center gap-4">
+                <Link
+                  href="/products"
+                  className="inline-block bg-[#4A2525] text-white hover:bg-[#321717] font-medium text-[11px] sm:text-xs tracking-[0.2em] uppercase px-8 py-4 transition-all shadow-md rounded-none"
+                >
+                  EXPLORE COLLECTION
+                </Link>
+                <Link
+                  href="/products?category=necklaces"
+                  className="inline-block border border-[#8C6B6D]/40 text-[#3A2526] hover:bg-[#F0E4DC] font-medium text-[11px] sm:text-xs tracking-[0.2em] uppercase px-6 py-4 transition-all"
+                >
+                  NECKLACES
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Image Column */}
+            <div className="lg:col-span-6 relative h-[420px] sm:h-[500px] lg:h-[620px] w-full flex items-center justify-center">
+              <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl border border-[#EFE3DA]">
+                <img
+                  src="/images/premium_hero_model.png"
+                  alt="Model in delicate saree wearing fine Kundan necklace and earrings"
+                  className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-700"
+                />
+
+                {/* Floating Luxury Emblem Overlay */}
+                <div className="absolute top-5 right-5 z-20 w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-white/60 bg-white/70 backdrop-blur-md flex flex-col items-center justify-center text-center p-2 text-[7px] sm:text-[8px] font-semibold tracking-widest text-[#3A2526] uppercase shadow-lg">
+                  <span className="text-[6.5px] sm:text-[7px] tracking-[0.15em] block text-[#3A2526] font-bold">TIMELESS</span>
+                  <Heart className="w-3 h-3 text-[#4A2525] fill-[#4A2525] my-0.5" />
+                  <span className="text-[6.5px] sm:text-[7px] tracking-[0.15em] block text-[#3A2526] font-bold">S2F JEWELS</span>
+                </div>
+              </div>
             </div>
 
           </div>
         </div>
-
-        {/* Floating Seal Emblem (Top Right) */}
-        <div className="absolute top-6 right-6 sm:right-12 lg:right-28 z-20 w-20 h-20 sm:w-28 sm:h-28 rounded-full border border-white/60 bg-white/40 backdrop-blur-md flex flex-col items-center justify-center text-center p-2 text-[7.5px] sm:text-[9px] font-semibold tracking-widest text-[#3A2526] uppercase shadow-md">
-          <span className="text-[6.5px] sm:text-[7.5px] tracking-[0.15em] block text-[#3A2526] font-bold">TIMELESS BEAUTY</span>
-          <Heart className="w-3 h-3 sm:w-4 sm:h-4 text-[#4A2525] fill-[#4A2525] my-0.5 sm:my-1" />
-          <span className="text-[6.5px] sm:text-[7.5px] tracking-[0.15em] block text-[#3A2526] font-bold">MADE WITH LOVE</span>
-        </div>
-
-        {/* Hero Carousel Dots at Bottom Center */}
-        <div className="absolute bottom-4 inset-x-0 z-20 flex justify-center items-center space-x-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-white lg:bg-[#4A2525]"></span>
-          <span className="w-2.5 h-2.5 rounded-full bg-white/50 lg:bg-[#D8C4B6]"></span>
-          <span className="w-2.5 h-2.5 rounded-full bg-white/50 lg:bg-[#D8C4B6]"></span>
-        </div>
-
       </section>
 
       {/* 2. SHOP BY CATEGORY (3 Columns on Mobile, 6 on Desktop) */}
