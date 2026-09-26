@@ -145,13 +145,13 @@ export default async function HomePage() {
           <div className="relative w-full h-full max-w-[1600px] mx-auto flex justify-end">
             <div className="w-full lg:w-[65%] h-full relative">
               <img
-                src="/images/premium_hero_model.png"
-                alt="Model in delicate saree wearing fine Kundan necklace and earrings"
-                className="w-full h-full object-cover object-top lg:object-right"
+                src="/images/desktop_crisp_hero.png"
+                alt="Model in golden-ivory silk saree wearing fine Kundan gold necklace and earrings"
+                className="w-full h-full object-cover object-top lg:object-right shrink-0 brightness-[1.02] contrast-[1.03]"
               />
 
-              {/* Seamless Desktop Fade Gradient Overlay */}
-              <div className="absolute inset-y-0 left-0 w-64 bg-gradient-to-r from-[#FAF4F0] via-[#FAF4F0]/85 to-transparent hidden lg:block" />
+              {/* Seamless Soft Desktop Fade Gradient Overlay */}
+              <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-[#FAF4F0] via-[#FAF4F0]/70 to-transparent hidden lg:block pointer-events-none" />
             </div>
           </div>
         </div>
