@@ -9,13 +9,20 @@ export default function Footer() {
         
         {/* Column 1: Brand & Tagline */}
         <div className="space-y-4 md:col-span-1">
-          <Link href="/" className="inline-block">
-            <span className="font-serif text-xl font-medium tracking-[0.2em] text-[#3A2526] uppercase block">
-              S2F JEWELS
-            </span>
-            <span className="text-[8px] tracking-[0.25em] text-[#8C6B6D] uppercase block -mt-1 font-semibold">
-              HAUTE JOAILLERIE
-            </span>
+          <Link href="/" className="flex items-center space-x-3 group">
+            <img
+              src="/images/s2f_logo.png"
+              alt="S2F Jewels Logo"
+              className="w-10 h-10 object-contain rounded-full border border-[#EFE3DA] shadow-sm mix-blend-multiply shrink-0"
+            />
+            <div>
+              <span className="font-serif text-lg font-medium tracking-[0.2em] text-[#3A2526] uppercase block leading-none">
+                S2F JEWELS
+              </span>
+              <span className="text-[8px] tracking-[0.25em] text-[#8C6B6D] uppercase block mt-1 font-semibold">
+                HAUTE JOAILLERIE
+              </span>
+            </div>
           </Link>
 
           <p className="text-[#8C6B6D] text-xs leading-relaxed">

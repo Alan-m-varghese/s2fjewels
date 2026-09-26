@@ -59,14 +59,21 @@ export default function Navbar() {
             </Link>
           </nav>
 
-          {/* Center Brand Logo (Lumière Style S2F JEWELS) */}
-          <Link href="/" className="flex flex-col items-center group text-center my-auto">
-            <span className="font-serif text-2xl sm:text-3xl font-medium tracking-[0.25em] text-[#3A2526] group-hover:text-[#5C3637] transition-colors uppercase">
-              S2F JEWELS
-            </span>
-            <span className="text-[9px] tracking-[0.3em] text-[#8C6B6D] uppercase font-semibold block -mt-0.5">
-              HAUTE JOAILLERIE
-            </span>
+          {/* Center Brand Logo (S2F JEWELS with exact user logo emblem) */}
+          <Link href="/" className="flex items-center space-x-3 group my-auto">
+            <img
+              src="/images/s2f_logo.png"
+              alt="S2F Jewels Logo"
+              className="w-9 h-9 sm:w-10 sm:h-10 object-contain rounded-full border border-[#EFE3DA]/60 shadow-sm mix-blend-multiply shrink-0"
+            />
+            <div className="flex flex-col items-start text-left">
+              <span className="font-serif text-xl sm:text-2xl font-medium tracking-[0.2em] text-[#3A2526] group-hover:text-[#5C3637] transition-colors uppercase leading-none">
+                S2F JEWELS
+              </span>
+              <span className="text-[8px] sm:text-[9px] tracking-[0.25em] text-[#8C6B6D] uppercase font-semibold block mt-1">
+                HAUTE JOAILLERIE
+              </span>
+            </div>
           </Link>
 
           {/* Right Icons */}
