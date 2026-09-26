@@ -596,7 +596,7 @@ export default async function HomePage() {
               &quot;The perfect gift! My wife loved it and the customer service was amazing.&quot;
             </p>
             <div>
-              <p className="text-xs font-bold text-[#3A2526]">— Sreeja P </p>
+              <p className="text-xs font-bold text-[#3A2526]">— Rahul P </p>
               <div className="flex justify-center text-amber-500 space-x-0.5 mt-1">
                 <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
                 <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
