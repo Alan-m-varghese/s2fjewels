@@ -29,8 +29,8 @@ const FALLBACK_CATEGORIES = [
 const FALLBACK_PRODUCTS = [
   {
     id: 'prod-1',
-    name: 'Royal Solitaire Diamond Ring 18K',
-    slug: 'royal-solitaire-diamond-ring-18k',
+    name: 'Royal Solitaire Diamond Ring',
+    slug: 'royal-solitaire-diamond-ring',
     price: 49999,
     stock: 8,
     images: ['https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80'],
@@ -47,8 +47,8 @@ const FALLBACK_PRODUCTS = [
   },
   {
     id: 'prod-3',
-    name: 'Classic Diamond Stud Earrings 22K',
-    slug: 'classic-diamond-stud-earrings-22k',
+    name: 'Classic Diamond Stud Earrings',
+    slug: 'classic-diamond-stud-earrings',
     price: 34999,
     stock: 12,
     images: ['https://images.unsplash.com/photo-1635767798638-3e25273a8236?auto=format&fit=crop&w=800&q=80'],
@@ -56,8 +56,8 @@ const FALLBACK_PRODUCTS = [
   },
   {
     id: 'prod-4',
-    name: 'Heritage Crafted Gold Bangles Pair',
-    slug: 'heritage-crafted-gold-bangles-pair',
+    name: 'Heritage Crafted Bangles Pair',
+    slug: 'heritage-crafted-bangles-pair',
     price: 124999,
     stock: 4,
     images: ['https://images.unsplash.com/photo-1611591475111-a83d7350c33d?auto=format&fit=crop&w=800&q=80'],
@@ -158,7 +158,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             Fine Jewelry Collection
           </h1>
           <p className="text-xs sm:text-sm text-[#8C6B6D] font-normal">
-            Handcrafted hallmarked gold jewelry, solitaires, and heritage creations.
+            Handcrafted jewelry, fashion pieces, and heritage creations.
           </p>
         </div>
 

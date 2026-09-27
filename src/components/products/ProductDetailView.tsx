@@ -133,7 +133,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
               className="py-4 bg-amber-700 hover:bg-amber-800 text-white font-bold rounded-2xl text-sm uppercase tracking-wider shadow-lg hover:shadow-amber-700/20 transition-all flex items-center justify-center space-x-2"
             >
               <ShoppingBag className="w-5 h-5" />
-              <span>Add to Bag</span>
+              <span>Add to Cart</span>
             </button>
 
             <button

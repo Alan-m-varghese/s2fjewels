@@ -90,7 +90,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           }
           className="w-full py-2 bg-[#5C3637] hover:bg-[#422627] text-white font-semibold text-[11px] tracking-wider uppercase rounded-lg transition-colors shadow-sm"
         >
-          ADD TO BAG
+          ADD TO CART
         </button>
       </div>
     </div>

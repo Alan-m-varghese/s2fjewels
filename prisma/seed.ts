@@ -16,7 +16,7 @@ async function main() {
       email: 'admin@s2fjewels.com',
       passwordHash: adminPasswordHash,
       role: Role.ADMIN,
-      phone: '+919876543210',
+      phone: '+919037812684',
     },
   });
   console.log('Admin user created:', adminUser.email);

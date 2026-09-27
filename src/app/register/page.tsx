@@ -101,7 +101,7 @@ export default function RegisterPage() {
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               className="w-full bg-neutral-950 border border-neutral-800 rounded-xl py-3 pl-10 pr-4 text-sm text-neutral-100 focus:border-amber-500 focus:outline-none"
-              placeholder="+91 9876543210"
+              placeholder="+91 9037812684"
             />
             <Phone className="w-4 h-4 text-neutral-500 absolute left-3 top-3.5" />
           </div>

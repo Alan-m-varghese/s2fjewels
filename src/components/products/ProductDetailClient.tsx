@@ -175,12 +175,12 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                 {added ? (
                   <>
                     <Check className="w-5 h-5" />
-                    <span>Added to Bag</span>
+                    <span>Added to Cart</span>
                   </>
                 ) : (
                   <>
                     <ShoppingBag className="w-5 h-5" />
-                    <span>Add to Bag</span>
+                    <span>Add to Cart</span>
                   </>
                 )}
               </button>

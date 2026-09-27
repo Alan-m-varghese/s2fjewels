@@ -10,9 +10,9 @@ export const revalidate = 0;
 const FALLBACK_PRODUCTS = [
   {
     id: 'prod-1',
-    name: 'Royal Solitaire Diamond Ring 18K',
-    slug: 'royal-solitaire-diamond-ring-18k',
-    description: 'Masterpiece 1-carat brilliant cut natural solitaire ring crafted in certified premium finish with SGL authenticity certificate.',
+    name: 'Royal Solitaire Diamond Ring',
+    slug: 'royal-solitaire-diamond-ring',
+    description: 'Masterpiece solitaire ring crafted in premium finish with elegant detailing.',
     price: 49999,
     stock: 8,
     images: [

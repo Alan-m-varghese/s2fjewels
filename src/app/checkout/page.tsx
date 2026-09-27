@@ -163,7 +163,7 @@ export default function CheckoutPage() {
             onClick={() => router.back()}
             className="inline-flex items-center text-xs font-bold text-stone-500 hover:text-amber-800 mb-2"
           >
-            <ArrowLeft className="w-4 h-4 mr-1" /> Back to Bag
+            <ArrowLeft className="w-4 h-4 mr-1" /> Back to Cart
           </button>
           <h1 className="font-serif text-3xl font-bold text-stone-900">Checkout & Delivery</h1>
         </div>
@@ -235,7 +235,7 @@ export default function CheckoutPage() {
                     value={address.phone}
                     onChange={(e) => setAddress({ ...address, phone: e.target.value })}
                     className="w-full bg-white border border-stone-300 rounded-xl p-2.5 text-stone-900 focus:border-amber-700 focus:outline-none"
-                    placeholder="+91 9876543210"
+                    placeholder="+91 9037812684"
                   />
                 </div>
 

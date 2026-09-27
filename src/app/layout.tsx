@@ -9,8 +9,8 @@ import Footer from '@/components/layout/Footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'S2F Jewels | Luxury Handcrafted Fine Jewelry Store',
-  description: 'Discover certified solitaire diamond rings, emerald choker necklaces, 22k gold temple bangles, and rose gold earrings.',
+  title: 'S2F Jewels | Luxury Handcrafted Jewelry Store',
+  description: 'Discover handcrafted jewelry, necklaces, rings, bangles, and earrings.',
 };
 
 export default function RootLayout({

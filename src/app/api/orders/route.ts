@@ -64,7 +64,7 @@ export async function GET(req: Request) {
           totalAmount: 89999,
           status: 'PAID',
           createdAt: new Date().toISOString(),
-          user: { name: 'Aarav Patel', email: 'aarav@example.com', phone: '+919876543210' },
+          user: { name: 'Aarav Patel', email: 'aarav@example.com', phone: '+919037812684' },
           address: { line1: '12 Marine Drive', city: 'Mumbai', state: 'Maharashtra', postalCode: '400020' },
           orderItems: [
             {

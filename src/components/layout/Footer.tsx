@@ -5,10 +5,10 @@ import { Lock, Award, RefreshCw, Heart } from 'lucide-react';
 export default function Footer() {
   return (
     <footer className="bg-[#FAF4F0] text-[#3A2526] pt-16 pb-12 border-t border-[#EFE3DA]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-5 gap-10 text-xs pb-12 border-b border-[#EFE3DA]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-10 text-xs pb-12 border-b border-[#EFE3DA]">
         
         {/* Column 1: Brand & Tagline */}
-        <div className="space-y-4 md:col-span-1">
+        <div className="space-y-4">
           <Link href="/" className="flex items-center space-x-3 group">
             <img
               src="/images/s2f_logo.png"
@@ -37,44 +37,23 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Column 2: SHOP */}
+        {/* Column 2: SHOP CATEGORIES */}
         <div className="space-y-3">
-          <h4 className="font-semibold text-[#5C3637] tracking-widest uppercase text-[10px]">SHOP</h4>
+          <h4 className="font-semibold text-[#5C3637] tracking-widest uppercase text-[10px]">SHOP CATEGORIES</h4>
           <ul className="space-y-2 text-[#8C6B6D]">
             <li><Link href="/products" className="hover:text-[#3A2526]">All Jewelry</Link></li>
-            <li><Link href="/products?category=necklaces" className="hover:text-[#3A2526]">Necklaces</Link></li>
-            <li><Link href="/products?category=earrings" className="hover:text-[#3A2526]">Earrings</Link></li>
-            <li><Link href="/products?category=rings" className="hover:text-[#3A2526]">Rings</Link></li>
+            <li><Link href="/products?category=necklaces" className="hover:text-[#3A2526]">Necklace</Link></li>
+            <li><Link href="/products?category=long-chains" className="hover:text-[#3A2526]">Long Chains</Link></li>
+            <li><Link href="/products?category=bangles" className="hover:text-[#3A2526]">Bangles</Link></li>
             <li><Link href="/products?category=bracelets" className="hover:text-[#3A2526]">Bracelets</Link></li>
-            <li><Link href="/products?category=rings" className="hover:text-[#3A2526]">Gifts</Link></li>
+            <li><Link href="/products?category=anklets" className="hover:text-[#3A2526]">Anklets</Link></li>
+            <li><Link href="/products?category=earrings" className="hover:text-[#3A2526]">Earings</Link></li>
+            <li><Link href="/products?category=rings" className="hover:text-[#3A2526]">Rings</Link></li>
+            <li><Link href="/products?category=combo-set" className="hover:text-[#3A2526]">Combo Set</Link></li>
           </ul>
         </div>
 
-        {/* Column 3: COLLECTIONS */}
-        <div className="space-y-3">
-          <h4 className="font-semibold text-[#5C3637] tracking-widest uppercase text-[10px]">COLLECTIONS</h4>
-          <ul className="space-y-2 text-[#8C6B6D]">
-            <li><Link href="/products?category=necklaces" className="hover:text-[#3A2526]">Petal & Pearl</Link></li>
-            <li><Link href="/products?category=rings" className="hover:text-[#3A2526]">Golden Romance</Link></li>
-            <li><Link href="/products?category=earrings" className="hover:text-[#3A2526]">Celestial Glow</Link></li>
-            <li><Link href="/products?category=bracelets" className="hover:text-[#3A2526]">Minimal Muse</Link></li>
-            <li><Link href="/products?category=necklaces" className="hover:text-[#3A2526]">Wedding</Link></li>
-          </ul>
-        </div>
-
-        {/* Column 4: HELP & ABOUT */}
-        <div className="space-y-3">
-          <h4 className="font-semibold text-[#5C3637] tracking-widest uppercase text-[10px]">HELP & ABOUT</h4>
-          <ul className="space-y-2 text-[#8C6B6D]">
-            <li><Link href="/#our-story" className="hover:text-[#3A2526]">Our Story</Link></li>
-            <li><Link href="/account/orders" className="hover:text-[#3A2526]">Shipping & Delivery</Link></li>
-            <li><Link href="/account/orders" className="hover:text-[#3A2526]">Returns & Exchanges</Link></li>
-            <li><Link href="/cart" className="hover:text-[#3A2526]">Care Guide</Link></li>
-            <li><Link href="/#our-story" className="hover:text-[#3A2526]">Contact Us</Link></li>
-          </ul>
-        </div>
-
-        {/* Column 5: Value Pillars (Strictly NO free shipping / offers!) */}
+        {/* Column 3: Value Pillars */}
         <div className="space-y-4">
           <div className="flex items-start space-x-3">
             <Lock className="w-4 h-4 text-[#5C3637] shrink-0 mt-0.5" />
@@ -106,9 +85,9 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-[#8C6B6D] space-y-2 sm:space-y-0">
         <p>© 2026 S2F Jewels. All rights reserved.</p>
         <div className="flex items-center space-x-4">
-          <Link href="/products" className="hover:text-[#3A2526]">Privacy Policy</Link>
+          <Link href="/privacy-policy" className="hover:text-[#3A2526]">Privacy Policy</Link>
           <span>|</span>
-          <Link href="/products" className="hover:text-[#3A2526]">Terms of Service</Link>
+          <Link href="/terms-of-service" className="hover:text-[#3A2526]">Terms of Service</Link>
         </div>
       </div>
     </footer>

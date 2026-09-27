@@ -25,7 +25,7 @@ export const authOptions: NextAuthOptions = {
             name: 'S2F Admin',
             email: 'admin@s2fjewels.com',
             role: 'ADMIN' as any,
-            phone: '+919876543210',
+            phone: '+919037812684',
           };
         }
 

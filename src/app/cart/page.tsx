@@ -30,7 +30,7 @@ export default function CartPage() {
             <ShoppingBag className="w-8 h-8" />
           </div>
           <h1 className="font-serif text-2xl font-bold text-stone-900">Your Shopping Bag is Empty</h1>
-          <p className="text-sm text-stone-600 font-medium">Explore our handcrafted fine jewelry collection and add certified gold & solitaire creations.</p>
+          <p className="text-sm text-stone-600 font-medium">Explore our handcrafted jewelry collection and find your favorite pieces.</p>
           <Link
             href="/products"
             className="inline-block bg-amber-700 hover:bg-amber-800 text-white font-bold px-8 py-3.5 rounded-full text-xs uppercase tracking-wider shadow-sm transition-all"
@@ -67,7 +67,6 @@ export default function CartPage() {
                   </div>
                   <div>
                     <h3 className="font-serif font-bold text-stone-900 text-base">{product.name}</h3>
-                    <p className="text-xs text-stone-500 font-medium mt-0.5">22K / 18K Certified Gold</p>
                     <span className="font-serif font-bold text-stone-900 block mt-1">
                       ₹{Number(product.price).toLocaleString('en-IN')}
                     </span>
