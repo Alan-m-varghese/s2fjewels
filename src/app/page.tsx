@@ -105,11 +105,11 @@ const FALLBACK_BEST_SELLERS = [
   },
   {
     id: 'prod-3',
-    name: 'Pearl Grace Earrings',
-    slug: 'classic-diamond-stud-earrings-22k',
-    price: 6900,
-    stock: 12,
-    images: ['https://images.unsplash.com/photo-1635767798638-3e25273a8236?auto=format&fit=crop&w=600&q=80'],
+    name: 'Antique Gold Chandelier Earrings',
+    slug: 'antique-gold-chandelier-earrings',
+    price: 999,
+    stock: 9,
+    images: ['https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=600&q=80'],
     category: { name: 'Earrings', slug: 'earrings' },
   },
   {
@@ -161,7 +161,7 @@ export default async function HomePage() {
       include: {
         products: {
           where: { status: 'ACTIVE' },
-          take: 3,
+          take: 10,
           orderBy: { id: 'asc' },
         },
       },
@@ -236,6 +236,17 @@ export default async function HomePage() {
     dbCategories.forEach((cat) => {
       const nonCoverProduct = cat.products.find((p) => {
         const isCover = p.images.some((img) => coverImageUrls.has(img));
+        const isExcluded = p.slug === 'multicolour-floral-stud-earrings' || p.name.includes('Multicolour Floral Stud');
+        if (isExcluded) return false;
+
+        if (cat.slug === 'earrings') {
+          // Specifically prefer Antique Gold Chandelier Earrings for earrings best seller
+          const chandelierProd = cat.products.find(
+            (item) => item.slug === 'antique-gold-chandelier-earrings' || item.name.includes('Antique Gold Chandelier')
+          );
+          if (chandelierProd) return p.id === chandelierProd.id;
+        }
+
         if (cat.slug === 'bracelets') {
           const n = p.name.toLowerCase();
           return !isCover && (n.includes('bangle') || n.includes('kada') || n.includes('bracelet')) && !n.includes('chain') && !n.includes('anklet');
@@ -263,7 +274,8 @@ export default async function HomePage() {
 
     allActiveProducts.forEach((p) => {
       const isCover = p.images.some((img) => coverImageUrls.has(img));
-      if (!isCover && bestSellersList.length < 5 && !bestSellersList.some((bp) => bp.id === p.id)) {
+      const isExcluded = p.slug === 'multicolour-floral-stud-earrings' || p.name.includes('Multicolour Floral Stud');
+      if (!isCover && !isExcluded && bestSellersList.length < 5 && !bestSellersList.some((bp) => bp.id === p.id)) {
         bestSellersList.push({
           ...p,
           price: Number(p.price),
