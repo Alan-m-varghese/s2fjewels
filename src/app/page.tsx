@@ -8,16 +8,40 @@ export const revalidate = 0;
 
 const CIRCULAR_CATEGORIES = [
   {
-    name: 'NECKLACES',
+    name: 'NECKLACE',
     slug: 'necklaces',
     key: 'necklaces',
     img: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=400&q=80',
   },
   {
-    name: 'EARRINGS',
+    name: 'LONG CHAINS',
+    slug: 'long-chains',
+    key: 'long-chains',
+    img: '/images/longchain.jpg',
+  },
+  {
+    name: 'BANGLES',
+    slug: 'bangles',
+    key: 'bangles',
+    img: 'https://images.unsplash.com/photo-1611591475111-a83d7350c33d?auto=format&fit=crop&w=400&q=80',
+  },
+  {
+    name: 'BRACELETS',
+    slug: 'bracelets',
+    key: 'bracelets',
+    img: '/images/bangles.jpg',
+  },
+  {
+    name: 'ANKLETS',
+    slug: 'anklets',
+    key: 'anklets',
+    img: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=400&q=80',
+  },
+  {
+    name: 'EARINGS',
     slug: 'earrings',
     key: 'earrings',
-    img: 'https://images.unsplash.com/photo-1635767798638-3e25273a8236?auto=format&fit=crop&w=400&q=80',
+    img: '/images/eaeringscover.jpg',
   },
   {
     name: 'RINGS',
@@ -26,22 +50,10 @@ const CIRCULAR_CATEGORIES = [
     img: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=400&q=80',
   },
   {
-    name: 'BRACELETS',
-    slug: 'bracelets',
-    key: 'bracelets',
-    img: 'https://images.unsplash.com/photo-1611591475111-a83d7350c33d?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    name: 'FINE GIFTS',
-    slug: 'rings',
-    key: 'fine-gifts',
-    img: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    name: 'WEDDING',
-    slug: 'necklaces',
-    key: 'wedding',
-    img: 'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=400&q=80',
+    name: 'COMBO SET',
+    slug: 'combo-set',
+    key: 'combo-set',
+    img: '/images/combo.jpg',
   },
 ];
 
@@ -157,7 +169,7 @@ export default async function HomePage() {
 
     // Build category slug -> image map from real products
     dbCategories.forEach((cat) => {
-      // Find suitable product for category (avoid matching neck chains to bracelets)
+      // Find suitable product for category
       const validProduct = cat.products.find((p) => {
         if (cat.slug === 'bracelets') {
           const n = p.name.toLowerCase();
@@ -171,7 +183,7 @@ export default async function HomePage() {
       }
     });
 
-    // Specifically fetch a true Bangle / Kada product for Bracelets category
+    // Specifically fetch a true Bangle / Kada product for Bangles category
     const trueBangleProduct = await prisma.product.findFirst({
       where: {
         status: 'ACTIVE',
@@ -179,7 +191,6 @@ export default async function HomePage() {
           { name: { contains: 'Bangle', mode: 'insensitive' } },
           { name: { contains: 'Kada', mode: 'insensitive' } },
           { name: { contains: 'Bangles', mode: 'insensitive' } },
-          { name: { contains: 'Tennis Bracelet', mode: 'insensitive' } },
         ],
         NOT: [
           { name: { contains: 'Chain', mode: 'insensitive' } },
@@ -190,8 +201,14 @@ export default async function HomePage() {
     });
 
     if (trueBangleProduct && trueBangleProduct.images?.length > 0) {
-      categoryImageMap['bracelets'] = trueBangleProduct.images[0];
+      categoryImageMap['bangles'] = trueBangleProduct.images[0];
     }
+
+    // Custom explicit cover image overrides requested by user (applied LAST so they are never overwritten)
+    categoryImageMap['earrings'] = '/images/eaeringscover.jpg';
+    categoryImageMap['long-chains'] = '/images/longchain.jpg';
+    categoryImageMap['combo-set'] = '/images/combo.jpg';
+    categoryImageMap['bracelets'] = '/images/bangles.jpg';
 
     // Ensure FINE GIFTS and WEDDING get unique distinct product images
     const ringsCategory = dbCategories.find((c) => c.slug === 'rings');
@@ -259,17 +276,10 @@ export default async function HomePage() {
     }
 
     // 3. Pick 4 DISTINCT product types for Curated Collections:
-    // (1 Necklace, 1 Ring, 1 Earring, 1 Bangle/Kada)
+    // (1 Necklace, 1 Ring, 1 Combo set, 1 Bangle)
     const distinctProductsMap: Record<string, any> = {};
     dbCategories.forEach((cat) => {
-      const validProduct = cat.products.find((p) => {
-        if (cat.slug === 'bracelets') {
-          const n = p.name.toLowerCase();
-          return (n.includes('bangle') || n.includes('kada') || n.includes('bracelet')) && !n.includes('chain') && !n.includes('anklet');
-        }
-        return true;
-      }) || cat.products[0];
-
+      const validProduct = cat.products[0];
       if (validProduct) {
         distinctProductsMap[cat.slug] = {
           ...validProduct,
@@ -278,15 +288,8 @@ export default async function HomePage() {
       }
     });
 
-    if (trueBangleProduct) {
-      distinctProductsMap['bracelets'] = {
-        ...trueBangleProduct,
-        category: { name: 'Bracelets & Bangles', slug: 'bracelets' },
-      };
-    }
-
     // Priority order for the 4 collection cards
-    const collectionSlugs = ['necklaces', 'rings', 'earrings', 'bracelets'];
+    const collectionSlugs = ['necklaces', 'rings', 'combo-set', 'bangles'];
     featuredProducts = collectionSlugs
       .map((slug) => distinctProductsMap[slug])
       .filter(Boolean);
@@ -404,7 +407,7 @@ export default async function HomePage() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-6 text-center">
+        <div className="grid grid-cols-4 sm:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-4 text-center">
           {categoriesList.map((cat, idx) => (
             <Link
               key={idx}

@@ -16,10 +16,14 @@ interface ProductsPageProps {
 }
 
 const FALLBACK_CATEGORIES = [
-  { id: 'cat-1', name: 'Rings', slug: 'rings', _count: { products: 1 } },
-  { id: 'cat-2', name: 'Necklaces', slug: 'necklaces', _count: { products: 1 } },
-  { id: 'cat-3', name: 'Earrings', slug: 'earrings', _count: { products: 1 } },
-  { id: 'cat-4', name: 'Bracelets', slug: 'bracelets', _count: { products: 1 } },
+  { id: 'cat-1', name: 'Necklace', slug: 'necklaces', _count: { products: 10 } },
+  { id: 'cat-2', name: 'Long chains', slug: 'long-chains', _count: { products: 8 } },
+  { id: 'cat-3', name: 'Bangles', slug: 'bangles', _count: { products: 12 } },
+  { id: 'cat-4', name: 'Bracelets', slug: 'bracelets', _count: { products: 5 } },
+  { id: 'cat-5', name: 'Anklets', slug: 'anklets', _count: { products: 6 } },
+  { id: 'cat-6', name: 'Earings', slug: 'earrings', _count: { products: 10 } },
+  { id: 'cat-7', name: 'Rings', slug: 'rings', _count: { products: 6 } },
+  { id: 'cat-8', name: 'Combo set', slug: 'combo-set', _count: { products: 5 } },
 ];
 
 const FALLBACK_PRODUCTS = [
@@ -61,6 +65,19 @@ const FALLBACK_PRODUCTS = [
   },
 ];
 
+function resolveCategorySlugs(slug: string): string[] {
+  const s = slug.toLowerCase().trim();
+  if (s === 'necklace' || s === 'necklaces') return ['necklaces', 'necklace'];
+  if (s === 'longchains' || s === 'long-chains' || s === 'longchain' || s === 'long-chain') return ['long-chains', 'longchains', 'longchain'];
+  if (s === 'bangles' || s === 'bangle') return ['bangles', 'bangle'];
+  if (s === 'bracelets' || s === 'bracelet') return ['bracelets', 'bracelet'];
+  if (s === 'anklets' || s === 'anklet') return ['anklets', 'anklet'];
+  if (s === 'earings' || s === 'earrings' || s === 'earring') return ['earrings', 'earings', 'earring'];
+  if (s === 'rings' || s === 'ring') return ['rings', 'ring'];
+  if (s === 'combo-set' || s === 'comboset' || s === 'combo') return ['combo-set', 'comboset', 'combo'];
+  return [slug];
+}
+
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const categorySlug = searchParams.category;
   const search = searchParams.search;
@@ -79,6 +96,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           select: { products: true },
         },
       },
+      orderBy: { name: 'asc' },
     });
     categories = fetchedCategories as any;
 
@@ -87,8 +105,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     };
 
     if (categorySlug) {
+      const allowedSlugs = resolveCategorySlugs(categorySlug);
       where.category = {
-        slug: categorySlug,
+        slug: { in: allowedSlugs },
       };
     }
 
