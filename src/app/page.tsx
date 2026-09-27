@@ -228,24 +228,38 @@ export default async function HomePage() {
       categoryImageMap['wedding'] = necklacesCategory.products[0].images[0];
     }
 
+    // Fetch explicit replacement product requested by user for bestsellers
+    const antiqueChandelier = await prisma.product.findFirst({
+      where: {
+        status: 'ACTIVE',
+        OR: [
+          { slug: 'antique-gold-chandelier-earrings' },
+          { name: { contains: 'Antique Gold Chandelier', mode: 'insensitive' } },
+        ],
+      },
+      include: { category: true },
+    });
+
     // 2. Fetch 5 BEST SELLERS from 5 DISTINCT CATEGORIES, excluding cover images
     const coverImageUrls = new Set(Object.values(categoryImageMap));
     const bestSellersList: any[] = [];
     const usedBestSellerCatSlugs = new Set<string>();
 
     dbCategories.forEach((cat) => {
+      if (cat.slug === 'earrings' && antiqueChandelier) {
+        bestSellersList.push({
+          ...antiqueChandelier,
+          price: Number(antiqueChandelier.price),
+          category: { name: cat.name, slug: cat.slug },
+        });
+        usedBestSellerCatSlugs.add(cat.slug);
+        return;
+      }
+
       const nonCoverProduct = cat.products.find((p) => {
         const isCover = p.images.some((img) => coverImageUrls.has(img));
-        const isExcluded = p.slug === 'multicolour-floral-stud-earrings' || p.name.includes('Multicolour Floral Stud');
+        const isExcluded = p.slug === 'multicolour-floral-stud-earrings' || p.name.toLowerCase().includes('multicolour floral stud');
         if (isExcluded) return false;
-
-        if (cat.slug === 'earrings') {
-          // Specifically prefer Antique Gold Chandelier Earrings for earrings best seller
-          const chandelierProd = cat.products.find(
-            (item) => item.slug === 'antique-gold-chandelier-earrings' || item.name.includes('Antique Gold Chandelier')
-          );
-          if (chandelierProd) return p.id === chandelierProd.id;
-        }
 
         if (cat.slug === 'bracelets') {
           const n = p.name.toLowerCase();
@@ -264,6 +278,15 @@ export default async function HomePage() {
       }
     });
 
+    // Ensure Antique Chandelier product is present in bestsellers
+    if (antiqueChandelier && !bestSellersList.some((bp) => bp.id === antiqueChandelier.id)) {
+      bestSellersList.unshift({
+        ...antiqueChandelier,
+        price: Number(antiqueChandelier.price),
+        category: antiqueChandelier.category ? { name: antiqueChandelier.category.name, slug: antiqueChandelier.category.slug } : { name: 'Earrings', slug: 'earrings' },
+      });
+    }
+
     // Fetch remaining active non-cover products across database to complete 5 items
     const allActiveProducts = await prisma.product.findMany({
       where: { status: 'ACTIVE' },
@@ -274,7 +297,7 @@ export default async function HomePage() {
 
     allActiveProducts.forEach((p) => {
       const isCover = p.images.some((img) => coverImageUrls.has(img));
-      const isExcluded = p.slug === 'multicolour-floral-stud-earrings' || p.name.includes('Multicolour Floral Stud');
+      const isExcluded = p.slug === 'multicolour-floral-stud-earrings' || p.name.toLowerCase().includes('multicolour floral stud');
       if (!isCover && !isExcluded && bestSellersList.length < 5 && !bestSellersList.some((bp) => bp.id === p.id)) {
         bestSellersList.push({
           ...p,
@@ -283,8 +306,12 @@ export default async function HomePage() {
       }
     });
 
-    if (bestSellersList.length > 0) {
-      bestSellers = bestSellersList.slice(0, 5);
+    const cleanBestSellers = bestSellersList.filter(
+      (p) => p.slug !== 'multicolour-floral-stud-earrings' && !p.name.toLowerCase().includes('multicolour floral stud')
+    );
+
+    if (cleanBestSellers.length > 0) {
+      bestSellers = cleanBestSellers.slice(0, 5);
     }
 
     // 3. Pick 4 DISTINCT product types for Curated Collections:
