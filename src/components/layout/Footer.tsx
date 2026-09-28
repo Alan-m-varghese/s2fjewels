@@ -1,13 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
-import { Lock, Award, RefreshCw, Heart } from 'lucide-react';
+import { Lock, Award, RefreshCw, Mail, Phone, MapPin, Truck } from 'lucide-react';
 
 export default function Footer() {
   return (
     <footer className="bg-[#FAF4F0] text-[#3A2526] pt-16 pb-12 border-t border-[#EFE3DA]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-10 text-xs pb-12 border-b border-[#EFE3DA]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 text-xs pb-12 border-b border-[#EFE3DA]">
         
-        {/* Column 1: Brand & Tagline */}
+        {/* Column 1: Brand & Contact Info */}
         <div className="space-y-4">
           <Link href="/" className="flex items-center space-x-3 group">
             <img
@@ -29,11 +29,19 @@ export default function Footer() {
             Timeless jewelry, meaningful moments. Handcrafted fine creations designed for life&apos;s memories.
           </p>
 
-          <div className="flex items-center space-x-3 text-[#5C3637] pt-1">
-            <span className="w-7 h-7 rounded-full bg-white border border-[#EFE3DA] flex items-center justify-center font-bold text-[10px]">IG</span>
-            <span className="w-7 h-7 rounded-full bg-white border border-[#EFE3DA] flex items-center justify-center font-bold text-[10px]">FB</span>
-            <span className="w-7 h-7 rounded-full bg-white border border-[#EFE3DA] flex items-center justify-center font-bold text-[10px]">PT</span>
-            <span className="w-7 h-7 rounded-full bg-white border border-[#EFE3DA] flex items-center justify-center font-bold text-[10px]">TK</span>
+          <div className="space-y-2 pt-2 text-[#5C3637] font-medium text-[11px]">
+            <div className="flex items-center space-x-2">
+              <Phone className="w-3.5 h-3.5 text-[#5C3637] shrink-0" />
+              <span>+91 90378 12684</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Mail className="w-3.5 h-3.5 text-[#5C3637] shrink-0" />
+              <span>support@s2fjewels.com</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <MapPin className="w-3.5 h-3.5 text-[#5C3637] shrink-0" />
+              <span>S2F Jewels, Kerala, India</span>
+            </div>
           </div>
         </div>
 
@@ -53,13 +61,25 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Column 3: Value Pillars */}
+        {/* Column 3: CUSTOMER CARE & LEGAL POLICIES */}
+        <div className="space-y-3">
+          <h4 className="font-semibold text-[#5C3637] tracking-widest uppercase text-[10px]">CUSTOMER CARE & LEGAL</h4>
+          <ul className="space-y-2 text-[#8C6B6D]">
+            <li><Link href="/contact-us" className="hover:text-[#3A2526]">Contact Us</Link></li>
+            <li><Link href="/shipping-and-delivery-policy" className="hover:text-[#3A2526]">Shipping & Delivery Policy</Link></li>
+            <li><Link href="/cancellation-and-refund-policy" className="hover:text-[#3A2526]">Cancellation & Refund Policy</Link></li>
+            <li><Link href="/privacy-policy" className="hover:text-[#3A2526]">Privacy Policy</Link></li>
+            <li><Link href="/terms-of-service" className="hover:text-[#3A2526]">Terms of Service</Link></li>
+          </ul>
+        </div>
+
+        {/* Column 4: Value Pillars */}
         <div className="space-y-4">
           <div className="flex items-start space-x-3">
             <Lock className="w-4 h-4 text-[#5C3637] shrink-0 mt-0.5" />
             <div>
               <h5 className="font-bold text-[#3A2526] uppercase text-[10px] tracking-wider">SECURE PAYMENTS</h5>
-              <p className="text-[11px] text-[#8C6B6D]">Safe & encrypted</p>
+              <p className="text-[11px] text-[#8C6B6D]">Razorpay SSL 256-bit Encrypted</p>
             </div>
           </div>
 
@@ -72,10 +92,18 @@ export default function Footer() {
           </div>
 
           <div className="flex items-start space-x-3">
+            <Truck className="w-4 h-4 text-[#5C3637] shrink-0 mt-0.5" />
+            <div>
+              <h5 className="font-bold text-[#3A2526] uppercase text-[10px] tracking-wider">PAN INDIA SHIPPING</h5>
+              <p className="text-[11px] text-[#8C6B6D]">Insured delivery with tracking</p>
+            </div>
+          </div>
+
+          <div className="flex items-start space-x-3">
             <RefreshCw className="w-4 h-4 text-[#5C3637] shrink-0 mt-0.5" />
             <div>
-              <h5 className="font-bold text-[#3A2526] uppercase text-[10px] tracking-wider">NO RETURNS POLICY</h5>
-              <p className="text-[11px] text-[#8C6B6D]">Unboxing video mandatory</p>
+              <h5 className="font-bold text-[#3A2526] uppercase text-[10px] tracking-wider">CANCELLATION & REFUNDS</h5>
+              <p className="text-[11px] text-[#8C6B6D]">Transparent policies</p>
             </div>
           </div>
         </div>
@@ -84,7 +112,13 @@ export default function Footer() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-[#8C6B6D] space-y-2 sm:space-y-0">
         <p>© 2026 S2F Jewels. All rights reserved.</p>
-        <div className="flex items-center space-x-4">
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+          <Link href="/contact-us" className="hover:text-[#3A2526]">Contact Us</Link>
+          <span>|</span>
+          <Link href="/shipping-and-delivery-policy" className="hover:text-[#3A2526]">Shipping Policy</Link>
+          <span>|</span>
+          <Link href="/cancellation-and-refund-policy" className="hover:text-[#3A2526]">Refund Policy</Link>
+          <span>|</span>
           <Link href="/privacy-policy" className="hover:text-[#3A2526]">Privacy Policy</Link>
           <span>|</span>
           <Link href="/terms-of-service" className="hover:text-[#3A2526]">Terms of Service</Link>
@@ -93,3 +127,4 @@ export default function Footer() {
     </footer>
   );
 }
+
