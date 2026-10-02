@@ -4,7 +4,7 @@ import prisma from '@/lib/prisma';
 import ProductCard from '@/components/products/ProductCard';
 import { Filter, SlidersHorizontal } from 'lucide-react';
 
-export const revalidate = 0;
+export const revalidate = 60;
 
 interface ProductsPageProps {
   searchParams: {
@@ -90,16 +90,6 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   let totalCount = 0;
 
   try {
-    const fetchedCategories = await prisma.category.findMany({
-      include: {
-        _count: {
-          select: { products: true },
-        },
-      },
-      orderBy: { name: 'asc' },
-    });
-    categories = fetchedCategories as any;
-
     const where: any = {
       status: 'ACTIVE',
     };
@@ -125,15 +115,28 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       orderBy = { price: 'desc' };
     }
 
-    totalCount = await prisma.product.count({ where });
+    // Run categories fetch, total count, and paginated products concurrently in 1 batch
+    const [fetchedCategories, countResult, dbProducts] = await Promise.all([
+      prisma.category.findMany({
+        include: {
+          _count: {
+            select: { products: true },
+          },
+        },
+        orderBy: { name: 'asc' },
+      }),
+      prisma.product.count({ where }),
+      prisma.product.findMany({
+        where,
+        include: { category: true },
+        orderBy,
+        skip: (currentPage - 1) * pageSize,
+        take: pageSize,
+      }),
+    ]);
 
-    const dbProducts = await prisma.product.findMany({
-      where,
-      include: { category: true },
-      orderBy,
-      skip: (currentPage - 1) * pageSize,
-      take: pageSize,
-    });
+    categories = fetchedCategories as any;
+    totalCount = countResult;
 
     products = dbProducts.map((p) => ({
       ...p,

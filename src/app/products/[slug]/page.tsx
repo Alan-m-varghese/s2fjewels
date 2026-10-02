@@ -5,7 +5,7 @@ import prisma from '@/lib/prisma';
 import ProductDetailView from '@/components/products/ProductDetailView';
 import { ArrowLeft } from 'lucide-react';
 
-export const revalidate = 0;
+export const revalidate = 60;
 
 const FALLBACK_PRODUCTS = [
   {

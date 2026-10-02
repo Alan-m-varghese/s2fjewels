@@ -15,25 +15,32 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Cart items are required' }, { status: 400 });
     }
 
-    // Determine or create User ID (Session user or guest customer)
-    let userId = session?.user?.id;
+    // Ensure valid User record exists in DB for foreign key constraint
+    let dbUser = null;
+    if (session?.user?.id) {
+      dbUser = await prisma.user.findUnique({ where: { id: session.user.id } });
+    }
+    if (!dbUser && session?.user?.email) {
+      dbUser = await prisma.user.findUnique({ where: { email: session.user.email } });
+    }
 
-    if (!userId) {
-      // Find or create guest customer user
-      const guestEmail = address?.email || 'guest@s2fjewels.com';
-      let guestUser = await prisma.user.findUnique({ where: { email: guestEmail } });
-      if (!guestUser) {
-        guestUser = await prisma.user.create({
+    if (!dbUser) {
+      const email = session?.user?.email || address?.email || 'guest@s2fjewels.com';
+      dbUser = await prisma.user.findUnique({ where: { email } });
+      if (!dbUser) {
+        dbUser = await prisma.user.create({
           data: {
-            email: guestEmail,
-            name: address?.name || 'Guest Customer',
-            passwordHash: 'guest_no_login_account',
-            phone: address?.phone || null,
+            id: session?.user?.id ? session.user.id : undefined,
+            email,
+            name: session?.user?.name || address?.name || 'Customer',
+            passwordHash: 'dev_no_login_pass',
+            phone: session?.user?.phone || address?.phone || null,
           },
         });
       }
-      userId = guestUser.id;
     }
+
+    const userId = dbUser.id;
 
     // Create / retrieve Shipping Address
     let addressId = null;

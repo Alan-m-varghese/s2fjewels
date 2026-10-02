@@ -79,11 +79,12 @@ export default function CheckoutPage() {
       }
 
       const { orderId, razorpayOrderId, amountPaise, key } = orderData;
+      const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || key;
       const isScriptLoaded = await loadRazorpayScript();
 
-      if (isScriptLoaded && (window as any).Razorpay && !key.includes('placeholder')) {
+      if (isScriptLoaded && (window as any).Razorpay && razorpayKey && !razorpayKey.includes('placeholder')) {
         const options = {
-          key: key,
+          key: razorpayKey,
           amount: amountPaise,
           currency: 'INR',
           name: 'S2F JEWELS',
@@ -96,22 +97,28 @@ export default function CheckoutPage() {
           },
           theme: { color: '#b45309' },
           handler: async function (response: any) {
-            const verifyRes = await fetch('/api/orders/verify', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                orderId,
-                razorpayOrderId: response.razorpay_order_id,
-                razorpayPaymentId: response.razorpay_payment_id,
-                razorpaySignature: response.razorpay_signature,
-              }),
-            });
+            try {
+              const verifyRes = await fetch('/api/orders/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  orderId,
+                  razorpayOrderId: response.razorpay_order_id,
+                  razorpayPaymentId: response.razorpay_payment_id,
+                  razorpaySignature: response.razorpay_signature,
+                }),
+              });
 
-            if (verifyRes.ok) {
-              clearCart();
-              router.push(`/orders/${orderId}/confirmation`);
-            } else {
-              setError('Payment verification failed.');
+              if (verifyRes.ok) {
+                clearCart();
+                router.push(`/orders/${orderId}/confirmation`);
+              } else {
+                const verifyErr = await verifyRes.json();
+                setError(verifyErr.error || 'Payment verification failed.');
+                setLoading(false);
+              }
+            } catch (vErr: any) {
+              setError(vErr.message || 'Error communicating with verification server.');
               setLoading(false);
             }
           },
@@ -123,6 +130,11 @@ export default function CheckoutPage() {
         };
 
         const rzp = new (window as any).Razorpay(options);
+        rzp.on('payment.failed', function (response: any) {
+          console.error('Razorpay payment failed:', response.error);
+          setError(`Payment failed: ${response.error?.description || response.error?.reason || 'Payment could not be completed.'}`);
+          setLoading(false);
+        });
         rzp.open();
       } else {
         const verifyRes = await fetch('/api/orders/verify', {

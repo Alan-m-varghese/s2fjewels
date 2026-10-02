@@ -4,7 +4,7 @@ import prisma from '@/lib/prisma';
 import ProductCard from '@/components/products/ProductCard';
 import { Heart, ArrowRight, Star, Award, CheckCircle2 } from 'lucide-react';
 
-export const revalidate = 0;
+export const revalidate = 60;
 
 const CIRCULAR_CATEGORIES = [
   {
@@ -139,33 +139,65 @@ export default async function HomePage() {
   let ourStoryImage = 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=800&q=80';
 
   try {
-    // Fetch authentic product image for Our Story section
-    const storyProduct = await prisma.product.findFirst({
-      where: {
-        status: 'ACTIVE',
-        OR: [
-          { name: { contains: 'Kundan', mode: 'insensitive' } },
-          { name: { contains: 'Royale', mode: 'insensitive' } },
-          { name: { contains: 'Heritage', mode: 'insensitive' } },
-          { name: { contains: 'Floral', mode: 'insensitive' } },
-        ],
-      },
-      orderBy: { id: 'asc' },
-    });
+    // Execute all database queries in a single parallel batch to eliminate waterfalls
+    const [storyProduct, dbCategories, trueBangleProduct, antiqueChandelier, allActiveProducts] = await Promise.all([
+      prisma.product.findFirst({
+        where: {
+          status: 'ACTIVE',
+          OR: [
+            { name: { contains: 'Kundan', mode: 'insensitive' } },
+            { name: { contains: 'Royale', mode: 'insensitive' } },
+            { name: { contains: 'Heritage', mode: 'insensitive' } },
+            { name: { contains: 'Floral', mode: 'insensitive' } },
+          ],
+        },
+        orderBy: { id: 'asc' },
+      }),
+      prisma.category.findMany({
+        include: {
+          products: {
+            where: { status: 'ACTIVE' },
+            take: 10,
+            orderBy: { id: 'asc' },
+          },
+        },
+      }),
+      prisma.product.findFirst({
+        where: {
+          status: 'ACTIVE',
+          OR: [
+            { name: { contains: 'Bangle', mode: 'insensitive' } },
+            { name: { contains: 'Kada', mode: 'insensitive' } },
+            { name: { contains: 'Bangles', mode: 'insensitive' } },
+          ],
+          NOT: [
+            { name: { contains: 'Chain', mode: 'insensitive' } },
+            { name: { contains: 'Anklet', mode: 'insensitive' } },
+          ],
+        },
+        include: { category: true },
+      }),
+      prisma.product.findFirst({
+        where: {
+          status: 'ACTIVE',
+          OR: [
+            { slug: 'antique-gold-chandelier-earrings' },
+            { name: { contains: 'Antique Gold Chandelier', mode: 'insensitive' } },
+          ],
+        },
+        include: { category: true },
+      }),
+      prisma.product.findMany({
+        where: { status: 'ACTIVE' },
+        include: { category: true },
+        take: 20,
+        orderBy: { id: 'asc' },
+      }),
+    ]);
 
     if (storyProduct && storyProduct.images?.length > 0) {
       ourStoryImage = storyProduct.images[0];
     }
-    // 1. Fetch categories with sample active products
-    const dbCategories = await prisma.category.findMany({
-      include: {
-        products: {
-          where: { status: 'ACTIVE' },
-          take: 10,
-          orderBy: { id: 'asc' },
-        },
-      },
-    });
 
     // Build category slug -> image map from real products
     dbCategories.forEach((cat) => {
@@ -181,23 +213,6 @@ export default async function HomePage() {
       if (validProduct && validProduct.images.length > 0) {
         categoryImageMap[cat.slug] = validProduct.images[0];
       }
-    });
-
-    // Specifically fetch a true Bangle / Kada product for Bangles category
-    const trueBangleProduct = await prisma.product.findFirst({
-      where: {
-        status: 'ACTIVE',
-        OR: [
-          { name: { contains: 'Bangle', mode: 'insensitive' } },
-          { name: { contains: 'Kada', mode: 'insensitive' } },
-          { name: { contains: 'Bangles', mode: 'insensitive' } },
-        ],
-        NOT: [
-          { name: { contains: 'Chain', mode: 'insensitive' } },
-          { name: { contains: 'Anklet', mode: 'insensitive' } },
-        ],
-      },
-      include: { category: true },
     });
 
     if (trueBangleProduct && trueBangleProduct.images?.length > 0) {
@@ -227,18 +242,6 @@ export default async function HomePage() {
     } else if (necklacesCategory && necklacesCategory.products[0]?.images.length > 0) {
       categoryImageMap['wedding'] = necklacesCategory.products[0].images[0];
     }
-
-    // Fetch explicit replacement product requested by user for bestsellers
-    const antiqueChandelier = await prisma.product.findFirst({
-      where: {
-        status: 'ACTIVE',
-        OR: [
-          { slug: 'antique-gold-chandelier-earrings' },
-          { name: { contains: 'Antique Gold Chandelier', mode: 'insensitive' } },
-        ],
-      },
-      include: { category: true },
-    });
 
     // 2. Fetch 5 BEST SELLERS from 5 DISTINCT CATEGORIES, excluding cover images
     const coverImageUrls = new Set(Object.values(categoryImageMap));
@@ -286,14 +289,6 @@ export default async function HomePage() {
         category: antiqueChandelier.category ? { name: antiqueChandelier.category.name, slug: antiqueChandelier.category.slug } : { name: 'Earrings', slug: 'earrings' },
       });
     }
-
-    // Fetch remaining active non-cover products across database to complete 5 items
-    const allActiveProducts = await prisma.product.findMany({
-      where: { status: 'ACTIVE' },
-      include: { category: true },
-      take: 20,
-      orderBy: { id: 'asc' },
-    });
 
     allActiveProducts.forEach((p) => {
       const isCover = p.images.some((img) => coverImageUrls.has(img));
