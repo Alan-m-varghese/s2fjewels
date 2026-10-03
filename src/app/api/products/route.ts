@@ -32,11 +32,20 @@ export async function GET(req: Request) {
       ];
     }
 
-    const [products, total] = await Promise.all([
+    const [rawProducts, total] = await Promise.all([
       prisma.product.findMany({
         where,
-        include: {
-          category: true,
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          price: true,
+          stock: true,
+          images: true,
+          status: true,
+          category: {
+            select: { id: true, name: true, slug: true },
+          },
           variants: true,
         },
         orderBy: { createdAt: 'desc' },
@@ -45,6 +54,11 @@ export async function GET(req: Request) {
       }),
       prisma.product.count({ where }),
     ]);
+
+    const products = rawProducts.map((p) => ({
+      ...p,
+      images: p.images && p.images.length > 0 ? [p.images[0]] : [],
+    }));
 
     return NextResponse.json({
       products,

@@ -118,7 +118,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     // Run categories fetch, total count, and paginated products concurrently in 1 batch
     const [fetchedCategories, countResult, dbProducts] = await Promise.all([
       prisma.category.findMany({
-        include: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
           _count: {
             select: { products: true },
           },
@@ -128,7 +131,17 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       prisma.product.count({ where }),
       prisma.product.findMany({
         where,
-        include: { category: true },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          price: true,
+          stock: true,
+          images: true,
+          category: {
+            select: { id: true, name: true, slug: true },
+          },
+        },
         orderBy,
         skip: (currentPage - 1) * pageSize,
         take: pageSize,
@@ -141,6 +154,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     products = dbProducts.map((p) => ({
       ...p,
       price: Number(p.price),
+      images: p.images && p.images.length > 0 ? [p.images[0]] : [],
     })) as any;
   } catch (err) {
     console.warn('Database error, loading fallback for ProductsPage:', err);
