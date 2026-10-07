@@ -8,7 +8,7 @@ export interface OrderNotificationPayload {
 }
 
 /**
- * Formats a phone number for Meta WhatsApp Cloud API (E.164 without leading +)
+ * Formats a phone number into E.164 without leading + (e.g. 91XXXXXXXXXX)
  */
 export function formatWhatsAppNumber(phone: string): string {
   let cleaned = phone.replace(/\D/g, '');
@@ -20,16 +20,50 @@ export function formatWhatsAppNumber(phone: string): string {
 }
 
 /**
- * Sends Meta WhatsApp Cloud API message (text or template)
+ * Sends message via Self-Hosted Baileys WhatsApp Microservice (Primary)
+ */
+async function sendSelfHostedWhatsAppMessage(toPhone: string, messageText: string) {
+  const serviceUrl = process.env.WHATSAPP_SERVICE_URL || 'http://localhost:5001';
+  const secret = process.env.WHATSAPP_SERVICE_SECRET || 's2f_whatsapp_secret_key_2026';
+  const formattedTo = formatWhatsAppNumber(toPhone);
+
+  try {
+    const response = await fetch(`${serviceUrl}/send-message`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${secret}`,
+      },
+      body: JSON.stringify({
+        to: formattedTo,
+        message: messageText,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error(`[WhatsApp Microservice Error] (${formattedTo}):`, data);
+      return { success: false, error: data };
+    }
+
+    console.log(`[WhatsApp Microservice Sent] Delivered to ${formattedTo} (ID: ${data.messageId})`);
+    return { success: true, data };
+  } catch (error: any) {
+    console.warn(`[WhatsApp Microservice Offline/Unavailable] (${formattedTo}):`, error?.message || error);
+    return { success: false, error: error?.message || error, offline: true };
+  }
+}
+
+/**
+ * Sends message via Meta WhatsApp Cloud API (Legacy / Backup)
  */
 async function sendMetaWhatsAppMessage(toPhone: string, messageText: string, templateName?: string) {
   const token = process.env.WHATSAPP_TOKEN;
   const phoneId = process.env.WHATSAPP_PHONE_NUMBER_ID;
 
   if (!token || !phoneId || token.includes('placeholder') || token.trim() === '') {
-    console.log(
-      `[WhatsApp Notification Skipped - Demo/Placeholder Mode] To: ${toPhone} | Message Preview: ${messageText.substring(0, 60)}...`
-    );
+    console.log(`[WhatsApp Meta Notification Skipped] To: ${toPhone} | Message Preview: ${messageText.substring(0, 60)}...`);
     return { success: true, mocked: true };
   }
 
@@ -64,16 +98,30 @@ async function sendMetaWhatsAppMessage(toPhone: string, messageText: string, tem
 
     const data = await response.json();
     if (!response.ok) {
-      console.error(`[WhatsApp API Error] (${formattedTo}):`, data);
+      console.error(`[Meta WhatsApp API Error] (${formattedTo}):`, data);
       return { success: false, error: data };
     }
 
-    console.log(`[WhatsApp Sent] Successfully delivered to: ${formattedTo}`);
+    console.log(`[Meta WhatsApp Sent] Successfully delivered to: ${formattedTo}`);
     return { success: true, data };
   } catch (error) {
-    console.error(`[WhatsApp Request Failed] (${formattedTo}):`, error);
+    console.error(`[Meta WhatsApp Request Failed] (${formattedTo}):`, error);
     return { success: false, error };
   }
+}
+
+/**
+ * Unified Sender: Tries Self-Hosted Microservice first, falls back to Meta API if configured
+ */
+async function sendWhatsAppMessage(toPhone: string, messageText: string, templateName?: string) {
+  // 1. Try Self-Hosted Microservice
+  const selfHostedRes = await sendSelfHostedWhatsAppMessage(toPhone, messageText);
+  if (selfHostedRes.success) {
+    return selfHostedRes;
+  }
+
+  // 2. Fallback to Meta API if Microservice is offline/failed
+  return await sendMetaWhatsAppMessage(toPhone, messageText, templateName);
 }
 
 /**
@@ -94,11 +142,11 @@ export async function sendWhatsAppOrderNotification(orderDetails: OrderNotificat
     `*Phone:* ${orderDetails.customerPhone || 'N/A'}\n` +
     `*Total Amount:* ₹${orderDetails.totalAmount.toLocaleString('en-IN')}\n\n` +
     `*Items Ordered:*\n${itemsSummary}\n\n` +
-    `Check your Admin Dashboard for details.`;
+    `Check your S2F Jewels Admin Dashboard for details.`;
 
   const adminPhone = process.env.WHATSAPP_ADMIN_NUMBER || process.env.WHATSAPP_TO_NUMBER;
   if (adminPhone) {
-    results.admin = await sendMetaWhatsAppMessage(adminPhone, adminMessage);
+    results.admin = await sendWhatsAppMessage(adminPhone, adminMessage);
   }
 
   // 2. Customer Confirmation Message
@@ -111,13 +159,12 @@ export async function sendWhatsAppOrderNotification(orderDetails: OrderNotificat
       `*Items:*\n${itemsSummary}\n\n` +
       `We are preparing your handcrafted jewels for dispatch. You can track your order status in your account profile.`;
 
-    results.customer = await sendMetaWhatsAppMessage(
+    results.customer = await sendWhatsAppMessage(
       orderDetails.customerPhone,
       customerMessage,
-      process.env.WHATSAPP_CUSTOMER_TEMPLATE_NAME // Optional template if approved by Meta
+      process.env.WHATSAPP_CUSTOMER_TEMPLATE_NAME
     );
   }
 
   return results;
 }
-

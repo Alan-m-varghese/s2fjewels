@@ -40,3 +40,9 @@ next-env.d.ts
 *.csv
 .vscode/
 .idea/
+
+# WhatsApp Service
+whatsapp-service/auth_info_baileys/
+whatsapp-service/node_modules/
+whatsapp-service/.env
+
